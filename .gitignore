@@ -1,0 +1,54 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ==========================================
+# Backend
+# ==========================================
+veterinaria-backend/.env
+veterinaria-backend/.env.local
+veterinaria-backend/.env.development
+veterinaria-backend/dist/
+veterinaria-backend/build/
+
+# ==========================================
+# Frontend
+# ==========================================
+veterinaria-frontend/dist/
+veterinaria-frontend/.angular/
+veterinaria-frontend/angular.json (solo si lo quieres ignorar)
+
+# ==========================================
+# IDE & Editor
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+
+# ==========================================
+# OS
+# ==========================================
+Thumbs.db
+.DS_Store
+
+# ==========================================
+# Logs
+# ==========================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# DOCUMENTACIÓN & MARKDOWN - SOLO LOCAL
+# ==========================================
+*.md
+

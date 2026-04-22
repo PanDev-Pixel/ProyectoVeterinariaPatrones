@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,7 +11,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MascotaService, Mascota } from '../../core/services/mascota.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ConfirmDialogService } from '../../shared/services/confirm-dialog.service';
 import { NgZone } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-lista-mascotas',
@@ -148,15 +150,17 @@ import { NgZone } from '@angular/core';
     }
   `]
 })
-export class ListaMascotasComponent implements OnInit {
+export class ListaMascotasComponent implements OnInit, OnDestroy {
   mascotas: Mascota[] = [];
   isLoading = true;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private mascotaService: MascotaService,
     private authService: AuthService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private confirmDialog: ConfirmDialogService,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef
   ) {}
@@ -165,37 +169,61 @@ export class ListaMascotasComponent implements OnInit {
     this.cargarMascotas();
   }
 
-  cargarMascotas() {
-    this.isLoading = true;
-    this.mascotaService.obtenerMascotas().subscribe({
-      next: (mascotas) => {
-        this.ngZone.run(() => {
-          this.mascotas = mascotas;
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        });
-      },
-      error: (error) => {
-        this.ngZone.run(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-          this.snackBar.open('Error al cargar mascotas', 'Cerrar', { duration: 3000 });
-        });
-      }
-    });
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  deleteMascota(id: number) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
-      this.mascotaService.eliminarMascota(id).subscribe({
-        next: () => {
-          this.snackBar.open('Mascota eliminada', 'Cerrar', { duration: 3000 });
-          this.cargarMascotas();
+  cargarMascotas() {
+    this.isLoading = true;
+    this.mascotaService.obtenerMascotas()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (mascotas) => {
+          this.ngZone.run(() => {
+            this.mascotas = mascotas;
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          });
         },
         error: (error) => {
-          this.snackBar.open('Error al eliminar mascota', 'Cerrar', { duration: 3000 });
+          this.ngZone.run(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            this.snackBar.open(
+              error.error?.mensaje || 'Error al cargar mascotas',
+              'Cerrar',
+              { duration: 3000 }
+            );
+          });
         }
       });
+  }
+
+  async deleteMascota(id: number) {
+    const confirmed = await this.confirmDialog.confirm(
+      'Eliminar Mascota',
+      '¿Estás seguro de que deseas eliminar esta mascota? Esta acción no se puede deshacer.',
+      'Eliminar'
+    );
+
+    if (confirmed) {
+      this.mascotaService.eliminarMascota(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.snackBar.open('✅ Mascota eliminada exitosamente', 'Cerrar', { duration: 3000 });
+            this.cargarMascotas();
+          },
+          error: (error) => {
+            console.error('Error al eliminar mascota:', error);
+            this.snackBar.open(
+              error.error?.mensaje || 'Error al eliminar mascota',
+              'Cerrar',
+              { duration: 3000 }
+            );
+          }
+        });
     }
   }
 

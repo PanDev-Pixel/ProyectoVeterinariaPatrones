@@ -1,42 +1,40 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 require('dotenv').config();
-
-const authRoutes = require('./routes/authRoutes');
-const mascotaRoutes = require('./routes/mascotaRoutes');
-const consultaRoutes = require('./routes/consultaRoutes');
-const authMiddleware = require('./middleware/authMiddleware');
 
 const app = express();
 
-// Middleware
+// Middlewares
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Rutas públicas
+// Importar rutas
+const authRoutes = require('./routes/authRoutes');
+const mascotaRoutes = require('./routes/mascotaRoutes');
+const citaRoutes = require('./routes/citaRoutes');
+const consultaRoutes = require('./routes/consultaRoutes');
+const citaVetRoutes = require('./routes/citaVetRoutes');
+const mascotaVetRoutes = require('./routes/mascotaVetRoutes');
+const tratamientoRoutes = require('./routes/tratamientoRoutes');
+const veterinarioRoutes = require('./routes/veterinarioRoutes');
+
+// Usar rutas
 app.use('/api/auth', authRoutes);
-
-// Rutas protegidas
 app.use('/api/mascotas', mascotaRoutes);
+app.use('/api/citas', citaRoutes);
 app.use('/api/consultas', consultaRoutes);
-app.get('/api/auth/profile', authMiddleware, (req, res) => {
-  // Este endpoint ya está definido en authRoutes pero necesita auth
-});
+app.use('/api/vet', citaVetRoutes);
+app.use('/api/vet', mascotaVetRoutes);
+app.use('/api/tratamientos', tratamientoRoutes);
+app.use('/api/veterinarios', veterinarioRoutes); 
 
 // Ruta de prueba
-app.get('/api/test', (req, res) => {
-  res.json({ mensaje: 'Backend funcionando correctamente' });
+app.get('/', (req, res) => {
+    res.json({ mensaje: 'API Veterinaria funcionando' });
 });
 
-// Manejo de errores para rutas no encontradas
-app.use((req, res) => {
-  res.status(404).json({ mensaje: 'Ruta no encontrada' });
-});
-
-// Iniciar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en puerto ${PORT}`);
+    console.log(`Servidor en http://localhost:${PORT}`);
 });

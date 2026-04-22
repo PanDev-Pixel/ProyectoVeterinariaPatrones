@@ -111,7 +111,23 @@ exports.perfil = async (req, res) => {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    res.json(usuarios[0]);
+    const usuario = usuarios[0];
+
+    // Si es veterinario, agregar especialidad
+    if (usuario.rol === 'veterinario') {
+      const connection2 = await pool.getConnection();
+      const [vets] = await connection2.query(
+        'SELECT especialidad FROM veterinario WHERE id_usuario = ?',
+        [userId]
+      );
+      connection2.release();
+      
+      if (vets.length > 0) {
+        usuario.especialidad = vets[0].especialidad;
+      }
+    }
+
+    res.json(usuario);
   } catch (error) {
     console.error('Error al obtener perfil:', error);
     res.status(500).json({ mensaje: 'Error al obtener perfil', error: error.message });

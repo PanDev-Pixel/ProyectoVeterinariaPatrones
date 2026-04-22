@@ -157,7 +157,11 @@ export class LoginComponent {
           this.isLoading = false;
           this.cdr.detectChanges();
           this.snackBar.open('Sesión iniciada correctamente', 'Cerrar', { duration: 3000 });
-          this.router.navigate(['/dashboard']);
+          if (response.usuario.rol === 'veterinario') {
+            this.router.navigate(['/dashboard-vet']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          } 
         });
       },
       error: (error) => {

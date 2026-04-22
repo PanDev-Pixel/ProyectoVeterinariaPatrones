@@ -39,11 +39,11 @@ CREATE TABLE `usuario` (
 -- ============================================
 
 CREATE TABLE `veterinario` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(50) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `especialidad` varchar(50) NOT NULL,
-  `telefono` varchar(27) NOT NULL,
-  PRIMARY KEY (`id`)
+  `anos_experiencia` int(11),
+  PRIMARY KEY (`id_usuario`),
+  KEY `fk_veterinario_usuario` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ============================================
@@ -133,11 +133,20 @@ ALTER TABLE `factura` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `mascota` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `tratamiento` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `usuario` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `veterinario` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 -- ============================================
 -- FOREIGN KEY CONSTRAINTS (RELACIONES)
 -- ============================================
+
+-- Relación 0: VETERINARIO -> USUARIO
+-- Un veterinario es un usuario con rol='veterinario'
+-- Si se elimina el usuario, se elimina el veterinario (CASCADE)
+ALTER TABLE `veterinario`
+  ADD CONSTRAINT `fk_veterinario_usuario`
+  FOREIGN KEY (`id_usuario`)
+  REFERENCES `usuario` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
 
 -- Relación 1: MASCOTA -> USUARIO
 -- Cada mascota pertenece a un usuario
@@ -171,11 +180,11 @@ ALTER TABLE `cita`
 
 -- Relación 4: CITA -> VETERINARIO
 -- Cada cita es con un veterinario
--- Si se elimina el veterinario, la cita sigue pero sin veterinario (SET NULL)
+-- Si se elimina el veterinario (usuario), la cita sigue pero sin veterinario (SET NULL)
 ALTER TABLE `cita`
   ADD CONSTRAINT `fk_cita_veterinario`
   FOREIGN KEY (`id_veterinario`)
-  REFERENCES `veterinario` (`id`)
+  REFERENCES `veterinario` (`id_usuario`)
   ON DELETE SET NULL
   ON UPDATE CASCADE;
 

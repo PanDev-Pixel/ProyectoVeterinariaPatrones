@@ -1,6 +1,6 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/services/auth.service';
 import { NgZone } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -44,27 +45,69 @@ import { NgZone } from '@angular/core';
               <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Nombre Completo</mat-label>
                 <input matInput formControlName="nombre" required>
+                <mat-error *ngIf="registerForm.get('nombre')?.hasError('required')">
+                  El nombre es requerido
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('nombre')?.hasError('minlength')">
+                  El nombre debe tener al menos 3 caracteres
+                </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Email</mat-label>
                 <input matInput type="email" formControlName="email" required>
+                <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+                  El email es requerido
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+                  Ingresa un email válido
+                </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Teléfono</mat-label>
+                <mat-label>Teléfono (ej: 87654321)</mat-label>
                 <input matInput formControlName="tel" required>
+                <mat-error *ngIf="registerForm.get('tel')?.hasError('required')">
+                  El teléfono es requerido
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('tel')?.hasError('pattern')">
+                  Ingresa un teléfono válido (8-15 dígitos)
+                </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="fill" class="full-width">
-                <mat-label>DIC/Cédula</mat-label>
+                <mat-label>DIC/Cédula (ej: 1-123-45678)</mat-label>
                 <input matInput formControlName="dic" required>
+                <mat-error *ngIf="registerForm.get('dic')?.hasError('required')">
+                  La cédula es requerida
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('dic')?.hasError('pattern')">
+                  Formato: 1-123-45678
+                </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Contraseña</mat-label>
                 <input matInput type="password" formControlName="contraseña" required>
+                <mat-error *ngIf="registerForm.get('contraseña')?.hasError('required')">
+                  La contraseña es requerida
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('contraseña')?.hasError('minlength')">
+                  La contraseña debe tener al menos 8 caracteres
+                </mat-error>
               </mat-form-field>
+
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Confirmar Contraseña</mat-label>
+                <input matInput type="password" formControlName="confirmarContraseña" required>
+                <mat-error *ngIf="registerForm.get('confirmarContraseña')?.hasError('required')">
+                  Confirma la contraseña
+                </mat-error>
+              </mat-form-field>
+
+              <mat-error *ngIf="registerForm.hasError('passwordMismatch')" class="form-error">
+                Las contraseñas no coinciden
+              </mat-error>
 
               <div class="form-actions">
                 <button mat-raised-button color="primary" (click)="register()" [disabled]="!registerForm.valid || isLoading">
@@ -115,6 +158,13 @@ import { NgZone } from '@angular/core';
       width: 100%;
     }
 
+    .form-error {
+      color: #f44336;
+      font-size: 12px;
+      margin: 10px 0;
+      display: block;
+    }
+
     .form-actions {
       margin-top: 20px;
       display: flex;
@@ -143,9 +193,10 @@ import { NgZone } from '@angular/core';
     }
   `]
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   isLoading = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -158,36 +209,61 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      tel: ['', Validators.required],
-      dic: ['', Validators.required],
-      contraseña: ['', [Validators.required, Validators.minLength(6)]]
-    });
+      tel: ['', [Validators.required, Validators.pattern(/^\d{8,15}$/)]],
+      dic: ['', [Validators.required, Validators.pattern(/^\d{1,2}-\d{3,4}-\d{1,5}$/)]],
+      contraseña: ['', [Validators.required, Validators.minLength(8)]],
+      confirmarContraseña: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  ngOnInit() {
+    // Component initialization
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('contraseña')?.value;
+    const confirmPassword = control.get('confirmarContraseña')?.value;
+
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
   register() {
     if (this.registerForm.invalid) return;
 
     this.isLoading = true;
-    this.authService.registro(this.registerForm.value).subscribe({
-      next: () => {
-        this.ngZone.run(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-          this.snackBar.open('Registro exitoso. Por favor inicia sesión', 'Cerrar', { duration: 3000 });
-          this.router.navigate(['/login']);
-        });
-      },
-      error: (error) => {
-        this.ngZone.run(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-          this.snackBar.open(
-            error.error?.mensaje || 'Error al registrar',
-            'Cerrar',
-            { duration: 3000 }
-          );
-        });
-      }
-    });
+    const { nombre, email, tel, dic, contraseña } = this.registerForm.value;
+
+    this.authService.registro({ nombre, email, tel, dic, contraseña })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.ngZone.run(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            this.snackBar.open('✅ Registro exitoso. Por favor inicia sesión', 'Cerrar', { duration: 3000 });
+            this.router.navigate(['/login']);
+          });
+        },
+        error: (error) => {
+          this.ngZone.run(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            this.snackBar.open(
+              error.error?.mensaje || 'Error al registrar',
+              'Cerrar',
+              { duration: 3000 }
+            );
+          });
+        }
+      });
   }
 }

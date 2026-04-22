@@ -60,6 +60,19 @@ import { AuthService } from '../../core/services/auth.service';
               <button mat-button color="primary">Agregar</button>
             </mat-card-actions>
           </mat-card>
+
+          <mat-card routerLink="/citas/crear" class="option-card">
+            <mat-card-header>
+              <mat-icon class="large-icon">event</mat-icon>
+            </mat-card-header>
+            <mat-card-title>Agendar Cita</mat-card-title>
+            <mat-card-content>
+              <p>Reserva una cita con un veterinario</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">Nueva Cita</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
     </div>

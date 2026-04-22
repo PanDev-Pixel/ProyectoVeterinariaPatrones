@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -12,6 +12,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { ConsultaService, HistorialItem } from '../../core/services/consulta.service';
 import { NgZone } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-historial-medico',
@@ -190,10 +191,11 @@ import { NgZone } from '@angular/core';
     }
   `]
 })
-export class HistorialMedicoComponent implements OnInit {
+export class HistorialMedicoComponent implements OnInit, OnDestroy {
   historial: HistorialItem[] = [];
   isLoading = true;
   mascotaId: number = 0;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private consultaService: ConsultaService,
@@ -209,23 +211,34 @@ export class HistorialMedicoComponent implements OnInit {
     this.cargarHistorial();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargarHistorial() {
-    this.consultaService.obtenerHistorial(this.mascotaId).subscribe({
-      next: (historial) => {
-        this.ngZone.run(() => {
-          this.historial = historial;
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        });
-      },
-      error: (error) => {
-        this.ngZone.run(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-          this.snackBar.open('Error al cargar historial', 'Cerrar', { duration: 3000 });
-        });
-      }
-    });
+    this.consultaService.obtenerHistorial(this.mascotaId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (historial) => {
+          this.ngZone.run(() => {
+            this.historial = historial;
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          });
+        },
+        error: (error) => {
+          this.ngZone.run(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            this.snackBar.open(
+              error.error?.mensaje || 'Error al cargar historial',
+              'Cerrar',
+              { duration: 3000 }
+            );
+          });
+        }
+      });
   }
 
   goBack() {

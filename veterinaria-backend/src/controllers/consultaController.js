@@ -16,7 +16,7 @@ exports.crearConsulta = async (req, res) => {
 
     // Verificar que la cita existe y pertenece a este veterinario
     const [citas] = await connection.query(
-      'SELECT id, estado FROM cita WHERE id = ? AND id_veterinario = ?',
+      'SELECT id, id_usuario, estado FROM cita WHERE id = ? AND id_veterinario = ?',
       [id_cita, vetId]
     );
 
@@ -26,6 +26,8 @@ exports.crearConsulta = async (req, res) => {
         mensaje: 'La cita no fue encontrada o no le pertenece'
       });
     }
+
+    const cita = citas[0];
 
     // Si hay id_tratamiento, verificar que existe
     if (id_tratamiento) {
@@ -41,9 +43,26 @@ exports.crearConsulta = async (req, res) => {
     }
 
     // Crear la consulta
-    await connection.query(
+    const [consultaResult] = await connection.query(
       'INSERT INTO consulta (id_cita, diagnostico, observaciones, id_tratamiento) VALUES (?, ?, ?, ?)',
       [id_cita, diagnostico, observaciones, id_tratamiento || null]
+    );
+
+    const consultaId = consultaResult.insertId;
+
+    // Crear factura automáticamente vinculada a la consulta
+    const [facturaResult] = await connection.query(
+      `INSERT INTO factura (id_usuario, id_consulta, id_tratamiento, fecha, total)
+       VALUES (?, ?, ?, CURDATE(), 0)`,
+      [cita.id_usuario, consultaId, id_tratamiento || null]
+    );
+
+    const facturaId = facturaResult.insertId;
+
+    // Actualizar consulta con id_factura
+    await connection.query(
+      'UPDATE consulta SET id_factura = ? WHERE id = ?',
+      [facturaId, consultaId]
     );
 
     // Actualizar estado de la cita a 'completada'
@@ -55,6 +74,8 @@ exports.crearConsulta = async (req, res) => {
     connection.release();
     res.status(201).json({
       mensaje: 'Consulta registrada exitosamente',
+      consulta_id: consultaId,
+      factura_id: facturaId,
       cita_id: id_cita,
       estado: 'completada'
     });

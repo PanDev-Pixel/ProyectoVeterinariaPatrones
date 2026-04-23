@@ -1,4 +1,5 @@
 const pool = require('../config/database');
+const { getHorariosDisponibles, isValidHora } = require('../utils/dateUtils');
 
 exports.crearCita = async (req, res) => {
     try { 
@@ -8,6 +9,12 @@ exports.crearCita = async (req, res) => {
         if (!id_mascota || !id_veterinario || !fecha || !hora) {
             return res.status(400).json({ mensaje: 'Todos los campos son requeridos' });
         }
+
+        // Validar formato de hora
+        if (!isValidHora(hora)) {
+            return res.status(400).json({ mensaje: 'La hora debe estar en formato HH:mm' });
+        }
+
     const connection = await pool.getConnection();
     // Verificar que la mascota pertenezca al usuario
     const [mascotas] = await connection.query(
@@ -192,16 +199,9 @@ exports.obtenerHorariosDisponibles = async (req, res) => {
 
         connection.release();
 
-        // Horarios disponibles: 8:00 a 18:00 (08:00 - 18:00)
-        const horariosDisponibles = [];
+        // Horarios disponibles: 8:00 a 18:00
         const horasOcupadas = citasOcupadas.map(c => c.hora);
-
-        for (let hora = 8; hora < 18; hora++) {
-            const horarioFormato = `${String(hora).padStart(2, '0')}:00`;
-            if (!horasOcupadas.includes(horarioFormato)) {
-                horariosDisponibles.push(horarioFormato);
-            }
-        }
+        const horariosDisponibles = getHorariosDisponibles(8, 18, horasOcupadas);
 
         res.json({
             fecha: fecha,

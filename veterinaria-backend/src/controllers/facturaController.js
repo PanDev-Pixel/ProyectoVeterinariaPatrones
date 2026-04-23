@@ -173,6 +173,50 @@ exports.obtenerFacturasPorConsulta = async (req, res) => {
   }
 };
 
+// Actualizar monto de factura
+exports.actualizarMontoFactura = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { total } = req.body;
+    const userId = req.user.id;
+
+    if (!total || total < 0) {
+      return res.status(400).json({
+        mensaje: 'El monto debe ser un número positivo'
+      });
+    }
+
+    const connection = await pool.getConnection();
+
+    // Verificar que la factura pertenece al usuario
+    const [facturas] = await connection.query(
+      'SELECT id FROM factura WHERE id = ? AND id_usuario = ?',
+      [id, userId]
+    );
+
+    if (facturas.length === 0) {
+      connection.release();
+      return res.status(404).json({ mensaje: 'Factura no encontrada' });
+    }
+
+    // Actualizar monto
+    await connection.query(
+      'UPDATE factura SET total = ? WHERE id = ?',
+      [total, id]
+    );
+
+    connection.release();
+    res.status(200).json({
+      mensaje: 'Factura actualizada exitosamente',
+      id,
+      total
+    });
+  } catch (error) {
+    console.error('Error al actualizar factura:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar factura', error: error.message });
+  }
+};
+
 // Eliminar una factura (solo si no hay relaciones posteriores)
 exports.eliminarFactura = async (req, res) => {
   try {

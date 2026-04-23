@@ -52,4 +52,8 @@ export class FacturaService {
   obtenerFacturasPorConsulta(consultaId: number): Observable<Factura[]> {
     return this.http.get<Factura[]>(`${API_URL}/consulta/${consultaId}`);
   }
+
+  actualizarMontoFactura(id: number, total: number): Observable<any> {
+    return this.http.put(`${API_URL}/${id}`, { total });
+  }
 }

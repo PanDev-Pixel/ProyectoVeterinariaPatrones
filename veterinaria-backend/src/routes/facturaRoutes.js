@@ -10,6 +10,7 @@ router.use(authMiddleware); // Todas las rutas de facturas requieren autenticaci
 router.post('/', facturaController.crearFactura);
 router.get('/', facturaController.obtenerFacturas);
 router.get('/:id', facturaController.obtenerFactura);
+router.put('/:id', facturaController.actualizarMontoFactura);
 router.get('/consulta/:consultaId', facturaController.obtenerFacturasPorConsulta);
 router.delete('/:id', facturaController.eliminarFactura);
 

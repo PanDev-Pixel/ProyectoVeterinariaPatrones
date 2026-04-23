@@ -44,7 +44,7 @@ exports.obtenerCitas = async (req, res) => {
         const userId = req.user.id;
         const connection = await pool.getConnection();
         const [citas] = await connection.query(
-            'SELECT c.id, c.fecha, c.hora, c.estado, m.nombre AS mascota, u.nombre AS veterinario FROM cita c JOIN mascota m ON c.id_mascota = m.id LEFT JOIN veterinario v ON c.id_veterinario = v.id_usuario LEFT JOIN usuario u ON v.id_usuario = u.id WHERE c.id_usuario = ? ORDER BY c.fecha DESC',
+            'SELECT c.id, c.fecha, c.hora, c.estado, m.nombre AS mascota, u.nombre AS veterinario FROM cita c JOIN mascota m ON c.id_mascota = m.id LEFT JOIN usuario u ON c.id_veterinario = u.id WHERE c.id_usuario = ? ORDER BY c.fecha DESC',
             [userId]
         );
         connection.release();
@@ -117,7 +117,7 @@ exports.obtenerCita = async (req, res) => {
         const userId = req.user.id;
         const connection = await pool.getConnection();
         const [citas] = await connection.query(
-            'SELECT c.id, c.fecha, c.hora, c.estado, m.nombre AS mascota, u.nombre AS veterinario FROM cita c JOIN mascota m ON c.id_mascota = m.id LEFT JOIN veterinario v ON c.id_veterinario = v.id_usuario LEFT JOIN usuario u ON v.id_usuario = u.id WHERE c.id = ? AND c.id_usuario = ?',
+            'SELECT c.id, c.fecha, c.hora, c.estado, m.nombre AS mascota, u.nombre AS veterinario FROM cita c JOIN mascota m ON c.id_mascota = m.id LEFT JOIN usuario u ON c.id_veterinario = u.id WHERE c.id = ? AND c.id_usuario = ?',
             [id, userId]
         );
         connection.release();

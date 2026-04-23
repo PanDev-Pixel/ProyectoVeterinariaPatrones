@@ -97,8 +97,8 @@ exports.obtenerHistorial = async (req, res) => {
         t.medicamento,
         t.duracion
       FROM cita c
+      LEFT JOIN usuario u ON c.id_veterinario = u.id
       LEFT JOIN veterinario v ON c.id_veterinario = v.id_usuario
-      LEFT JOIN usuario u ON v.id_usuario = u.id
       LEFT JOIN consulta con ON c.id = con.id_cita
       LEFT JOIN tratamiento t ON con.id_tratamiento = t.id
       WHERE c.id_mascota = ?

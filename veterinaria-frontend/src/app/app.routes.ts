@@ -6,6 +6,7 @@ import { DashboardVeterinarioComponent } from './features/dashboard/dashboard-ve
 import { ListaMascotasComponent } from './features/mascotas/lista-mascotas.component';
 import { AgregarMascotaComponent } from './features/mascotas/agregar-mascota.component';
 import { HistorialMedicoComponent } from './features/mascotas/historial-medico.component';
+import { ListaCitasComponent } from './features/citas/lista-citas.component';
 import { CrearCitaComponent } from './features/citas/crear-cita.component';
 import { CitasVetComponent } from './features/vet/citas-vet.component';
 import { ConsultasVetComponent } from './features/vet/consultas-vet.component';
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: 'mascotas', component: ListaMascotasComponent, canActivate: [authGuard] },
   { path: 'mascotas/add', component: AgregarMascotaComponent, canActivate: [authGuard] },
   { path: 'mascotas/:id/historial', component: HistorialMedicoComponent, canActivate: [authGuard] },
+  { path: 'citas', component: ListaCitasComponent, canActivate: [authGuard] },
   { path: 'citas/crear', component: CrearCitaComponent, canActivate: [authGuard] },
   
   // Veterinario

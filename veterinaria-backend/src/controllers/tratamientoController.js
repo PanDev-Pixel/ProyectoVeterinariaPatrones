@@ -9,19 +9,25 @@ exports.crearTratamiento = async (req, res) => {
     try {
         const { descripcion, medicamento, duracion } = req.body;
 
-        // Validar campos requeridos según tu BD
-        if (!descripcion || !medicamento || !duracion) {
+        // Validar campo requerido: solo descripcion es obligatoria
+        if (!descripcion) {
             return res.status(400).json({ 
-                mensaje: 'Todos los campos son requeridos: descripcion, medicamento, duracion' 
+                mensaje: 'El campo descripcion es requerido' 
             });
         }
+        
+        console.log('📝 [CREAR TRATAMIENTO] Datos recibidos:', {
+            descripcion,
+            medicamento: medicamento || 'N/A',
+            duracion: duracion || 'N/A'
+        });
 
         const connection = await pool.getConnection();
 
         const [resultado] = await connection.query(
             `INSERT INTO tratamiento (descripcion, medicamento, duracion) 
              VALUES (?, ?, ?)`,
-            [descripcion, medicamento, duracion]
+            [descripcion, medicamento || null, duracion || null]
         );
 
         const [tratamientos] = await connection.query(
@@ -30,11 +36,13 @@ exports.crearTratamiento = async (req, res) => {
         );
 
         connection.release();
+        
+        console.log('✅ [CREAR TRATAMIENTO] Tratamiento creado con ID:', resultado.insertId);
+        console.log('✅ [CREAR TRATAMIENTO] Datos devueltos:', tratamientos[0]);
+        console.log('✅ [CREAR TRATAMIENTO] Respuesta que se envía al cliente:', tratamientos[0]);
 
-        res.status(201).json({
-            mensaje: 'Tratamiento creado exitosamente',
-            tratamiento: tratamientos[0]
-        });
+        // Enviar directamente el objeto del tratamiento
+        res.status(201).json(tratamientos[0]);
 
     } catch (error) {
         console.error('Error al crear tratamiento:', error);

@@ -110,12 +110,18 @@ export class CitasVetComponent implements OnInit {
         this.isLoading = true;
         this.citavetService.obtenerCitas().subscribe({
             next: (citas) => {
-                this.citas = citas;
-                this.isLoading = false;
+                this.ngZone.run(() => {
+                    this.citas = citas;
+                    this.isLoading = false;
+                    this.cdr.detectChanges();
+                });
             },
             error: (error) => {
-                console.error('Error al cargar las citas:', error);
-                this.isLoading = false;
+                this.ngZone.run(() => {
+                    console.error('Error al cargar las citas:', error);
+                    this.isLoading = false;
+                    this.cdr.detectChanges();
+                });
             }
         });
     }

@@ -9,8 +9,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 import { MascotaVetService, MascotaVet } from '../../core/services/mascota-vet.service';
+import { CitaVetService } from '../../core/services/cita-vet.service';
 import { NgZone } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, forkJoin } from 'rxjs';
 
 interface MascotaConDueno extends MascotaVet {
   dueno_mascota: string;
@@ -119,6 +120,7 @@ interface MascotaConDueno extends MascotaVet {
                 Ver Historial
               </button>
               <button mat-button color="accent" 
+                      *ngIf="tieneCitasPendientes(mascota.id)"
                       (click)="registrarConsulta(mascota.id, mascota.nombre)">
                 Nueva Consulta
               </button>
@@ -230,15 +232,18 @@ interface MascotaConDueno extends MascotaVet {
     }
   `]
 })
-export class DashboardVeterinarioComponent implements OnInit {
+export class DashboardVeterinarioComponent implements OnInit, OnDestroy {
   usuarioNombre = '';
   especialidad = '';
   mascotas: MascotaConDueno[] = [];
   isLoadingMascotas = false;
+  citasPendientes: Map<number, boolean> = new Map(); // Mapa de mascota_id -> tiene citas pendientes
+  private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
     private mascotaVetService: MascotaVetService,
+    private citaVetService: CitaVetService,
     private router: Router,
     private snackBar: MatSnackBar,
     private ngZone: NgZone,
@@ -247,14 +252,22 @@ export class DashboardVeterinarioComponent implements OnInit {
 
   ngOnInit() {
     this.cargarPerfilVeterinario();
-    this.cargarTodasMascotas();
+    this.cargarDatos();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   cargarPerfilVeterinario() {
     this.authService.perfil().subscribe({
       next: (usuario: any) => {
-        this.usuarioNombre = usuario.nombre;
-        this.especialidad = usuario.especialidad || 'Medicina General';
+        this.ngZone.run(() => {
+          this.usuarioNombre = usuario.nombre;
+          this.especialidad = usuario.especialidad || 'Medicina General';
+          this.cdr.detectChanges();
+        });
       },
       error: (error) => {
         console.error('Error al cargar perfil:', error);
@@ -263,24 +276,55 @@ export class DashboardVeterinarioComponent implements OnInit {
     });
   }
 
-  cargarTodasMascotas() {
+  // Cargar mascotas y citas en paralelo
+  cargarDatos() {
     this.isLoadingMascotas = true;
-    this.mascotaVetService.obtenerTodasMascotas().subscribe({
-      next: (mascotas) => {
+    
+    forkJoin({
+      mascotas: this.mascotaVetService.obtenerTodasMascotas(),
+      citas: this.citaVetService.obtenerCitas()
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (resultado) => {
         this.ngZone.run(() => {
-          this.mascotas = mascotas;
+          this.mascotas = resultado.mascotas;
+          
+          // Construir mapa de citas pendientes por mascota
+          // Una cita es "pendiente de consulta" si estado es "pendiente"
+          this.citasPendientes.clear();
+          
+          resultado.citas.forEach(cita => {
+            if (cita.estado === 'pendiente') {
+              // Obtener el id_mascota de la cita (usando mascotaNombre o similar)
+              // Como no tenemos id_mascota directo en CitaVet, buscaremos por nombre
+              const mascotaConEsaNombre = this.mascotas.find(m => m.nombre === cita.mascotaNombre);
+              if (mascotaConEsaNombre) {
+                this.citasPendientes.set(mascotaConEsaNombre.id, true);
+              }
+            }
+          });
+          
+          console.log('✅ Mapa de citas pendientes:', Array.from(this.citasPendientes.entries()));
+          
           this.isLoadingMascotas = false;
           this.cdr.detectChanges();
         });
       },
       error: (error) => {
         this.ngZone.run(() => {
+          console.error('Error al cargar datos:', error);
           this.isLoadingMascotas = false;
           this.cdr.detectChanges();
           this.snackBar.open('Error al cargar pacientes', 'Cerrar', { duration: 3000 });
         });
       }
     });
+  }
+
+  // Verificar si una mascota tiene citas pendientes
+  tieneCitasPendientes(mascotaId: number): boolean {
+    return this.citasPendientes.has(mascotaId) && this.citasPendientes.get(mascotaId) === true;
   }
 
   verHistorial(mascotaId: number) {

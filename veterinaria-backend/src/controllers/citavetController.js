@@ -28,6 +28,14 @@ exports.registrarConsulta = async (req, res) => {
         const { diagnostico, observaciones, id_tratamiento } = req.body;
         const userId = req.user.id;
         const connection = await pool.getConnection();
+        
+        console.log('📋 [REGISTRAR CONSULTA] Datos recibidos del frontend:');
+        console.log('   - id_cita:', id);
+        console.log('   - diagnostico:', diagnostico);
+        console.log('   - observaciones:', observaciones);
+        console.log('   - id_tratamiento:', id_tratamiento);
+        console.log('   - tipo de id_tratamiento:', typeof id_tratamiento);
+        console.log('   - req.body completo:', req.body);
 
         // Validar campos requeridos
         if (!diagnostico || !observaciones) {
@@ -52,20 +60,27 @@ exports.registrarConsulta = async (req, res) => {
 
         // Si hay id_tratamiento, verificar que existe
         if (id_tratamiento) {
+            console.log('🔍 [REGISTRAR CONSULTA] Verificando existencia de tratamiento ID:', id_tratamiento);
             const [tratamientos] = await connection.query(
                 'SELECT id FROM tratamiento WHERE id = ?',
                 [id_tratamiento]
             );
 
             if (tratamientos.length === 0) {
+                console.error('❌ [REGISTRAR CONSULTA] Tratamiento no encontrado:', id_tratamiento);
                 connection.release();
                 return res.status(404).json({
                     mensaje: 'El tratamiento no fue encontrado'
                 });
             }
+            console.log('✅ [REGISTRAR CONSULTA] Tratamiento verificado exitosamente');
+        } else {
+            console.log('ℹ️  [REGISTRAR CONSULTA] Sin tratamiento (id_tratamiento es null/undefined)');
         }
 
         // Insertar la consulta con estructura correcta
+        console.log('💾 [REGISTRAR CONSULTA] Insertando en BD con id_tratamiento:', id_tratamiento || null);
+        
         await connection.query(
             `INSERT INTO consulta (id_cita, diagnostico, observaciones, id_tratamiento)
              VALUES (?, ?, ?, ?)`,
@@ -77,12 +92,16 @@ exports.registrarConsulta = async (req, res) => {
             `UPDATE cita SET estado = 'completada' WHERE id = ?`,
             [id]
         );
+        
+        console.log('✅ [REGISTRAR CONSULTA] Consulta registrada exitosamente en BD');
+        console.log('   - ID de tratamiento guardado:', id_tratamiento || null);
 
         connection.release();
         res.status(201).json({
             mensaje: 'Consulta registrada exitosamente',
             cita_id: id,
-            estado: 'completada'
+            estado: 'completada',
+            id_tratamiento: id_tratamiento || null
         });
     } catch (error) {
         console.error('Error al registrar consulta:', error);

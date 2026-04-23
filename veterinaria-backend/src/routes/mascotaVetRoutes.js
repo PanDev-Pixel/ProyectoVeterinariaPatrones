@@ -19,4 +19,20 @@ router.get(
   mascotaVetController.vertodasMascotas
 );
 
+// GET /api/vet/mascotas/:id - Ver una mascota específica
+router.get(
+  '/mascotas/:id',
+  authMiddleware,
+  veterinarioMiddleware,
+  mascotaVetController.obtenerMascota
+);
+
+// GET /api/vet/mascotas/:id/historial - Ver historial de una mascota
+router.get(
+  '/mascotas/:id/historial',
+  authMiddleware,
+  veterinarioMiddleware,
+  mascotaVetController.obtenerHistorialMascota
+);
+
 module.exports = router;

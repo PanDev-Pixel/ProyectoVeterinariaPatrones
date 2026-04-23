@@ -382,14 +382,20 @@ export class HistorialMascotaVetComponent implements OnInit {
   cargarMascota() {
     this.mascotaVetService.obtenerMascota(this.mascotaId).subscribe({
       next: (mascota) => {
-        this.mascotaNombre = mascota.nombre;
-        this.mascotaEspecie = mascota.especie;
-        this.mascotaRaza = mascota.raza;
-        this.mascotaEdad = mascota.edad;
+        this.ngZone.run(() => {
+          this.mascotaNombre = mascota.nombre;
+          this.mascotaEspecie = mascota.especie;
+          this.mascotaRaza = mascota.raza;
+          this.mascotaEdad = mascota.edad;
+          this.cdr.detectChanges();
+        });
       },
       error: (error) => {
-        console.error('Error al cargar mascota:', error);
-        this.snackBar.open('Error al cargar datos de mascota', 'Cerrar', { duration: 3000 });
+        this.ngZone.run(() => {
+          console.error('Error al cargar mascota:', error);
+          this.snackBar.open('Error al cargar datos de mascota', 'Cerrar', { duration: 3000 });
+          this.cdr.detectChanges();
+        });
       }
     });
   }

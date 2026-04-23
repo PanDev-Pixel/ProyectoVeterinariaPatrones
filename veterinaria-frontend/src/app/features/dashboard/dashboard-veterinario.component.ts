@@ -71,6 +71,19 @@ interface MascotaConDueno extends MascotaVet {
               <button mat-button color="primary">Nueva Consulta</button>
             </mat-card-actions>
           </mat-card>
+
+          <mat-card routerLink="/vet/facturacion" class="option-card">
+            <mat-card-header>
+              <mat-icon class="large-icon">receipt</mat-icon>
+            </mat-card-header>
+            <mat-card-title>Facturación</mat-card-title>
+            <mat-card-content>
+              <p>Genera facturas por consultas realizadas</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">Facturar</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
 
         <!-- SECCIÓN: MIS PACIENTES (TODAS LAS MASCOTAS) -->
@@ -253,12 +266,18 @@ export class DashboardVeterinarioComponent implements OnInit {
   cargarPerfilVeterinario() {
     this.authService.perfil().subscribe({
       next: (usuario: any) => {
-        this.usuarioNombre = usuario.nombre;
-        this.especialidad = usuario.especialidad || 'Medicina General';
+        this.ngZone.run(() => {
+          this.usuarioNombre = usuario.nombre;
+          this.especialidad = usuario.especialidad || 'Medicina General';
+          this.cdr.detectChanges();
+        });
       },
       error: (error) => {
-        console.error('Error al cargar perfil:', error);
-        this.especialidad = 'Medicina General';
+        this.ngZone.run(() => {
+          console.error('Error al cargar perfil:', error);
+          this.especialidad = 'Medicina General';
+          this.cdr.detectChanges();
+        });
       }
     });
   }

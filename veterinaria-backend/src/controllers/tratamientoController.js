@@ -9,10 +9,10 @@ exports.crearTratamiento = async (req, res) => {
     try {
         const { descripcion, medicamento, duracion } = req.body;
 
-        // Validar campos requeridos según tu BD
-        if (!descripcion || !medicamento || !duracion) {
+        // Validar que al menos la descripción esté presente
+        if (!descripcion) {
             return res.status(400).json({ 
-                mensaje: 'Todos los campos son requeridos: descripcion, medicamento, duracion' 
+                mensaje: 'La descripción del tratamiento es requerida' 
             });
         }
 
@@ -21,7 +21,7 @@ exports.crearTratamiento = async (req, res) => {
         const [resultado] = await connection.query(
             `INSERT INTO tratamiento (descripcion, medicamento, duracion) 
              VALUES (?, ?, ?)`,
-            [descripcion, medicamento, duracion]
+            [descripcion, medicamento || null, duracion || null]
         );
 
         const [tratamientos] = await connection.query(
@@ -31,10 +31,7 @@ exports.crearTratamiento = async (req, res) => {
 
         connection.release();
 
-        res.status(201).json({
-            mensaje: 'Tratamiento creado exitosamente',
-            tratamiento: tratamientos[0]
-        });
+        res.status(201).json(tratamientos[0]);
 
     } catch (error) {
         console.error('Error al crear tratamiento:', error);

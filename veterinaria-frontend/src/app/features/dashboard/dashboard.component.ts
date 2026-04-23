@@ -73,6 +73,19 @@ import { AuthService } from '../../core/services/auth.service';
               <button mat-button color="primary">Nueva Cita</button>
             </mat-card-actions>
           </mat-card>
+
+          <mat-card routerLink="/facturas" class="option-card">
+            <mat-card-header>
+              <mat-icon class="large-icon">receipt</mat-icon>
+            </mat-card-header>
+            <mat-card-title>Mis Facturas</mat-card-title>
+            <mat-card-content>
+              <p>Consulta tus facturas médicas</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Facturas</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
     </div>

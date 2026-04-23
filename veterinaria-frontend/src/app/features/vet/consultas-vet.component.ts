@@ -49,81 +49,84 @@ import { NgZone } from '@angular/core';
           </mat-card-header>
 
           <mat-card-content>
-            <!-- Seleccionar Cita -->
-            <mat-form-field appearance="fill" class="full-width">
-              <mat-label>Seleccionar Cita Pendiente</mat-label>
-              <mat-select formControlName="citaId" (selectionChange)="onCitaChange()">
-                <mat-option *ngFor="let cita of citasPendientes" [value]="cita.id">
-                  {{ cita.fecha | date:'dd/MM/yyyy' }} {{ cita.hora }} - {{ cita.mascotaNombre }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="consultaForm.get('citaId')?.hasError('required')">
-                Selecciona una cita
-              </mat-error>
-            </mat-form-field>
+            <!-- Formulario completo -->
+            <form [formGroup]="consultaForm">
+              <!-- Seleccionar Cita -->
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Seleccionar Cita Pendiente</mat-label>
+                <mat-select formControlName="citaId" (selectionChange)="onCitaChange()">
+                  <mat-option *ngFor="let cita of citasPendientes" [value]="cita.id">
+                    {{ cita.fecha | date:'dd/MM/yyyy' }} {{ cita.hora }} - {{ cita.mascotaNombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="consultaForm.get('citaId')?.hasError('required')">
+                  Selecciona una cita
+                </mat-error>
+              </mat-form-field>
 
-            <div *ngIf="citasPendientes.length === 0 && !cargando" class="empty-state">
-              <mat-icon>event_busy</mat-icon>
-              <p>No tienes citas pendientes</p>
-            </div>
-
-            <mat-spinner *ngIf="cargando" diameter="40" class="spinner"></mat-spinner>
-
-            <!-- Formulario de Consulta -->
-            <form *ngIf="citaSeleccionada" [formGroup]="consultaForm">
-              <div class="cita-info">
-                <p><strong>Paciente:</strong> {{ citaSeleccionada.mascotaNombre }}</p>
-                <p><strong>Fecha:</strong> {{ citaSeleccionada.fecha | date:'longDate' }}</p>
-                <p><strong>Hora:</strong> {{ citaSeleccionada.hora }}</p>
+              <div *ngIf="citasPendientes.length === 0 && !cargando" class="empty-state">
+                <mat-icon>event_busy</mat-icon>
+                <p>No tienes citas pendientes</p>
               </div>
 
-              <!-- Diagnóstico -->
-              <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Diagnóstico *</mat-label>
-                <mat-select formControlName="diagnostico">
-                  <mat-option value="Gastroenteritis">Gastroenteritis</mat-option>
-                  <mat-option value="Infección respiratoria">Infección respiratoria</mat-option>
-                  <mat-option value="Dermatitis">Dermatitis</mat-option>
-                  <mat-option value="Otitis">Otitis</mat-option>
-                  <mat-option value="Parásitos">Parásitos</mat-option>
-                  <mat-option value="Revisión general">Revisión general</mat-option>
-                  <mat-option value="Vacunación">Vacunación</mat-option>
-                  <mat-option value="Otro">Otro</mat-option>
-                </mat-select>
-              </mat-form-field>
+              <mat-spinner *ngIf="cargando" diameter="40" class="spinner"></mat-spinner>
 
-              <!-- Observaciones -->
-              <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Observaciones *</mat-label>
-                <textarea matInput formControlName="observaciones" rows="3" required></textarea>
-              </mat-form-field>
+              <!-- Formulario de Consulta (solo si hay cita seleccionada) -->
+              <div *ngIf="citaSeleccionada">
+                <div class="cita-info">
+                  <p><strong>Paciente:</strong> {{ citaSeleccionada.mascotaNombre }}</p>
+                  <p><strong>Fecha:</strong> {{ citaSeleccionada.fecha | date:'longDate' }}</p>
+                  <p><strong>Hora:</strong> {{ citaSeleccionada.hora }}</p>
+                </div>
 
-              <!-- Tratamiento -->
-              <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Tratamiento recomendado</mat-label>
-                <textarea matInput formControlName="tratamiento" rows="2"></textarea>
-              </mat-form-field>
+                <!-- Diagnóstico -->
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Diagnóstico *</mat-label>
+                  <mat-select formControlName="diagnostico">
+                    <mat-option value="Gastroenteritis">Gastroenteritis</mat-option>
+                    <mat-option value="Infección respiratoria">Infección respiratoria</mat-option>
+                    <mat-option value="Dermatitis">Dermatitis</mat-option>
+                    <mat-option value="Otitis">Otitis</mat-option>
+                    <mat-option value="Parásitos">Parásitos</mat-option>
+                    <mat-option value="Revisión general">Revisión general</mat-option>
+                    <mat-option value="Vacunación">Vacunación</mat-option>
+                    <mat-option value="Otro">Otro</mat-option>
+                  </mat-select>
+                </mat-form-field>
 
-              <!-- Medicamento -->
-              <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Medicamento</mat-label>
-                <input matInput formControlName="medicamento" placeholder="Ej: Amoxicilina 500mg">
-              </mat-form-field>
+                <!-- Observaciones -->
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Observaciones *</mat-label>
+                  <textarea matInput formControlName="observaciones" rows="3" required></textarea>
+                </mat-form-field>
 
-              <!-- Duración -->
-              <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Duración del tratamiento</mat-label>
-                <input matInput formControlName="duracion" placeholder="Ej: 7 días">
-              </mat-form-field>
+                <!-- Tratamiento -->
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Tratamiento recomendado</mat-label>
+                  <textarea matInput formControlName="tratamiento" rows="2"></textarea>
+                </mat-form-field>
 
-              <div class="form-actions">
-                <button mat-raised-button color="primary" 
-                        (click)="guardarConsulta()" 
-                        [disabled]="!consultaForm.valid || guardando">
-                  <mat-icon>save</mat-icon> 
-                  {{ guardando ? 'Guardando...' : 'Guardar Consulta' }}
-                </button>
-                <button mat-button routerLink="/dashboard-vet">Cancelar</button>
+                <!-- Medicamento -->
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Medicamento</mat-label>
+                  <input matInput formControlName="medicamento" placeholder="Ej: Amoxicilina 500mg">
+                </mat-form-field>
+
+                <!-- Duración -->
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Duración del tratamiento</mat-label>
+                  <input matInput formControlName="duracion" placeholder="Ej: 7 días">
+                </mat-form-field>
+
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" 
+                          (click)="guardarConsulta()" 
+                          [disabled]="!consultaForm.valid || guardando">
+                    <mat-icon>save</mat-icon> 
+                    {{ guardando ? 'Guardando...' : 'Guardar Consulta' }}
+                  </button>
+                  <button mat-button routerLink="/dashboard-vet">Cancelar</button>
+                </div>
               </div>
             </form>
           </mat-card-content>
@@ -254,8 +257,11 @@ export class ConsultasVetComponent implements OnInit {
   }
 
   onCitaChange() {
-    const citaId = this.consultaForm.get('citaId')?.value;
-    this.citaSeleccionada = this.citasPendientes.find(c => c.id === citaId) || null;
+    this.ngZone.run(() => {
+      const citaId = this.consultaForm.get('citaId')?.value;
+      this.citaSeleccionada = this.citasPendientes.find(c => c.id === citaId) || null;
+      this.cdr.detectChanges();
+    });
   }
 
   guardarConsulta() {
@@ -265,31 +271,35 @@ export class ConsultasVetComponent implements OnInit {
     const formData = this.consultaForm.value;
 
     // Si hay tratamiento, crearlo primero
-    if (formData.tratamiento) {
+    if (formData.tratamiento && formData.tratamiento.trim()) {
       this.tratamientoService.crearTratamiento({
         descripcion: formData.tratamiento,
-        medicamento: formData.medicamento,
-        duracion: formData.duracion
+        medicamento: formData.medicamento || null,
+        duracion: formData.duracion || null
       }).subscribe({
-        next: (tratamiento) => {
+        next: (tratamiento: any) => {
+          console.log('✅ Tratamiento creado con ID:', tratamiento.id);
           this.registrarConsulta(tratamiento.id);
         },
         error: (error) => {
           this.ngZone.run(() => {
-            console.error('Error al crear tratamiento:', error);
+            console.error('❌ Error al crear tratamiento:', error);
             this.guardando = false;
-            this.snackBar.open('Error al crear tratamiento', 'Cerrar', { duration: 3000 });
             this.cdr.detectChanges();
+            this.snackBar.open('Error al crear tratamiento', 'Cerrar', { duration: 3000 });
           });
         }
       });
     } else {
+      console.log('📋 Registrando consulta sin tratamiento');
       this.registrarConsulta(null);
     }
   }
 
   private registrarConsulta(idTratamiento: number | null) {
     const formData = this.consultaForm.value;
+    
+    console.log('Enviando consulta con id_tratamiento:', idTratamiento);
     
     this.citaVetService.registrarConsulta(this.citaSeleccionada!.id, {
       diagnostico: formData.diagnostico,
@@ -299,6 +309,7 @@ export class ConsultasVetComponent implements OnInit {
       next: () => {
         this.ngZone.run(() => {
           this.guardando = false;
+          console.log('✅ Consulta registrada exitosamente');
           this.snackBar.open('✅ Consulta registrada exitosamente', 'Cerrar', { duration: 3000 });
           this.router.navigate(['/dashboard-vet']);
         });

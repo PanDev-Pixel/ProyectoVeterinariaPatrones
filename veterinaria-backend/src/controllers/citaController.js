@@ -28,7 +28,7 @@ exports.crearCita = async (req, res) => {
     }
     // Insertar la cita
     await connection.query(
-        'INSERT INTO CITA (id_usuario, id_mascota, id_veterinario, fecha, hora, estado) VALUES (?, ?, ?, ?, ?, ?)',
+        'INSERT INTO cita (id_usuario, id_mascota, id_veterinario, fecha, hora, estado) VALUES (?, ?, ?, ?, ?, ?)',
         [userId, id_mascota, id_veterinario, fecha, hora, 'pendiente']
     );
     connection.release();

@@ -98,4 +98,11 @@ export class FacturaService {
   obtenerFacturasPorConsulta(id_consulta: number): Observable<Factura[]> {
     return this.http.get<Factura[]>(`${this.apiUrl}/consulta/${id_consulta}`);
   }
+
+  /**
+   * Obtener facturas del veterinario (facturas de citas atendidas por el vet)
+   */
+  obtenerFacturasVeterinario(): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/veterinario`);
+  }
 }

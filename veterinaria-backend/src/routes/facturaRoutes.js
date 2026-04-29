@@ -9,6 +9,12 @@ router.use(authMiddleware); // Todas las rutas de facturas requieren autenticaci
 // GET /api/facturas - Obtener todas las facturas del usuario
 router.get('/', facturaController.obtenerFacturas);
 
+// GET /api/facturas/veterinario - Obtener facturas del veterinario (DEBE ir antes de /:id)
+router.get('/veterinario', facturaController.obtenerFacturasVeterinario);
+
+// GET /api/facturas/consulta/:id - Obtener facturas por consulta (DEBE ir antes de /:id)
+router.get('/consulta/:id', facturaController.obtenerFacturasPorConsulta);
+
 // GET /api/facturas/:id - Obtener detalle de una factura
 router.get('/:id', facturaController.obtenerFactura);
 
@@ -20,8 +26,5 @@ router.put('/:id', facturaController.actualizarFactura);
 
 // DELETE /api/facturas/:id - Eliminar una factura
 router.delete('/:id', facturaController.eliminarFactura);
-
-// GET /api/facturas/consulta/:id - Obtener facturas por consulta
-router.get('/consulta/:id', facturaController.obtenerFacturasPorConsulta);
 
 module.exports = router;

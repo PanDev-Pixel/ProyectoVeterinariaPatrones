@@ -156,8 +156,8 @@ exports.obtenerFactura = async (req, res) => {
              LEFT JOIN usuario dueno ON c.id_usuario = dueno.id
              LEFT JOIN tratamiento t ON f.id_tratamiento = t.id
              JOIN usuario usuario ON f.id_usuario = usuario.id
-             WHERE f.id = ? AND f.id_usuario = ?`,
-            [id, userId]
+             WHERE f.id = ? AND (f.id_usuario = ? OR c.id_veterinario = ?)`,
+            [id, userId, userId]
         );
 
         connection.release();
@@ -315,6 +315,46 @@ exports.obtenerFacturasPorConsulta = async (req, res) => {
         console.error('Error al obtener facturas por consulta:', error);
         res.status(500).json({
             mensaje: 'Error al obtener facturas',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Obtener todas las facturas de un veterinario
+ * GET /api/facturas/veterinario
+ */
+exports.obtenerFacturasVeterinario = async (req, res) => {
+    try {
+        const vetId = req.user.id;
+        const connection = await pool.getConnection();
+
+        const [facturas] = await connection.query(
+            `SELECT f.id, f.fecha, f.total,
+                    con.diagnostico, con.observaciones,
+                    m.nombre as mascota,
+                    t.descripcion as tratamiento,
+                    u.nombre as usuario_nombre,
+                    c.fecha as cita_fecha,
+                    c.hora as cita_hora
+             FROM factura f
+             LEFT JOIN consulta con ON f.id_consulta = con.id
+             LEFT JOIN cita c ON con.id_cita = c.id
+             LEFT JOIN mascota m ON c.id_mascota = m.id
+             LEFT JOIN tratamiento t ON f.id_tratamiento = t.id
+             JOIN usuario u ON f.id_usuario = u.id
+             WHERE c.id_veterinario = ?
+             ORDER BY f.fecha DESC`,
+            [vetId]
+        );
+
+        connection.release();
+        res.json(facturas);
+
+    } catch (error) {
+        console.error('Error al obtener facturas del veterinario:', error);
+        res.status(500).json({
+            mensaje: 'Error al obtener facturas del veterinario',
             error: error.message
         });
     }

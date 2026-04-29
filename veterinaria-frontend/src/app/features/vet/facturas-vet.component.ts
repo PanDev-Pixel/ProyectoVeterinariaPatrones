@@ -223,7 +223,7 @@ export class FacturasVetComponent implements OnInit {
 
   cargarFacturas() {
     this.cargando = true;
-    this.facturaService.obtenerFacturas().subscribe({
+    this.facturaService.obtenerFacturasVeterinario().subscribe({
       next: (data) => {
         this.facturas = data;
         this.cargando = false;

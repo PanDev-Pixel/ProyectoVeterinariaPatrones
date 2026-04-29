@@ -1,15 +1,18 @@
-const connection = require('../config/database');
+const pool = require('../config/database');
 
 // 1. Obtener todos los veterinarios
 exports.obtenerVeterinarios = async (req, res) => {
   try {
+    const connection = await pool.getConnection();
     const [veterinarios] = await connection.query(
       // CAMBIO: Se agregó "AS id" para que Angular lo reconozca
       "SELECT v.id_usuario AS id, u.nombre, v.especialidad FROM veterinario v INNER JOIN usuario u ON v.id_usuario = u.id WHERE u.activo = true ORDER BY u.nombre ASC"
     );
     
+    connection.release();
     return res.status(200).json(veterinarios);
   } catch (error) {
+    if (connection) connection.release();
     console.error('Error al obtener veterinarios:', error);
     return res.status(500).json({ 
       mensaje: 'Error al obtener veterinarios',
@@ -23,6 +26,7 @@ exports.obtenerVeterinarioDetalle = async (req, res) => {
   try {
     const { id } = req.params;
 
+    const connection = await pool.getConnection();
     const [veterinarios] = await connection.query(
       // CAMBIO: v.id NO EXISTE. Se cambió a v.id_usuario y se le puso el alias "id"
       `SELECT v.id_usuario AS id, u.nombre, u.email, u.tel, v.especialidad, u.activo
@@ -33,11 +37,14 @@ exports.obtenerVeterinarioDetalle = async (req, res) => {
     );
 
     if (veterinarios.length === 0) {
+      connection.release();
       return res.status(404).json({ mensaje: 'Veterinario no encontrado' });
     }
 
+    connection.release();
     return res.status(200).json(veterinarios[0]);
   } catch (error) {
+    if (connection) connection.release();
     console.error('Error al obtener veterinario:', error);
     return res.status(500).json({ 
       mensaje: 'Error al obtener veterinario',
@@ -56,6 +63,7 @@ exports.obtenerHorariosVeterinario = async (req, res) => {
       return res.status(400).json({ mensaje: 'Fecha requerida' });
     }
 
+    const connection = await pool.getConnection();
     const [citas] = await connection.query(
       // Aquí estaba bien id_veterinario, pero asegúrate de que el "id" que llega sea el correcto
       `SELECT hora FROM cita 
@@ -78,8 +86,10 @@ exports.obtenerHorariosVeterinario = async (req, res) => {
       }
     }
 
+    connection.release();
     return res.status(200).json({ horas: horasDisponibles });
   } catch (error) {
+    if (connection) connection.release();
     console.error('Error al obtener horarios:', error);
     return res.status(500).json({ 
       mensaje: 'Error al obtener horarios',

@@ -119,11 +119,11 @@ exports.obtenerTratamiento = async (req, res) => {
 exports.actualizarTratamiento = async (req, res) => {
     try {
         const { id } = req.params;
-        const { descripcion, medicamento, duracion } = req.body;
+        const { descripcion, medicamento, duracion, precio } = req.body;
 
-        if (!descripcion || !medicamento || !duracion) {
+        if (!descripcion) {
             return res.status(400).json({ 
-                mensaje: 'Todos los campos son requeridos: descripcion, medicamento, duracion' 
+                mensaje: 'El campo descripcion es requerido' 
             });
         }
 
@@ -141,9 +141,9 @@ exports.actualizarTratamiento = async (req, res) => {
 
         await connection.query(
             `UPDATE tratamiento 
-             SET descripcion = ?, medicamento = ?, duracion = ? 
+             SET descripcion = ?, medicamento = ?, duracion = ?, precio = ? 
              WHERE id = ?`,
-            [descripcion, medicamento, duracion, id]
+            [descripcion, medicamento || null, duracion || null, precio || null, id]
         );
 
         const [tratamientoActualizado] = await connection.query(

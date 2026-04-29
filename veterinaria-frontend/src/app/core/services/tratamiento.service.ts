@@ -14,9 +14,9 @@ export interface Tratamiento {
 
 export interface CrearTratamientoData {
     descripcion: string;
-    medicamento?: string;
-    duracion?: string;
-    precio?: number;
+    medicamento?: string | null;
+    duracion?: string | null;
+    precio?: number | null;
 }
 
 @Injectable({

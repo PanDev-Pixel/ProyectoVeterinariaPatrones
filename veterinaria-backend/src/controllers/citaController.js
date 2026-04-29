@@ -139,7 +139,8 @@ exports.obtenerCita = async (req, res) => {
 };
 
 exports.obtenerHistorial = async (req, res) => {
-    try {        const { id } = req.params;
+    try {
+        const { id } = req.params;
         const userId = req.user.id;
         const connection = await pool.getConnection(); 
         // Verificar que la cita exista y pertenezca al usuario

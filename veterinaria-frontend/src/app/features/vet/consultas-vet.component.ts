@@ -50,7 +50,7 @@ import { NgZone } from '@angular/core';
 
           <mat-card-content>
             <!-- Formulario Principal -->
-            <div [formGroup]="consultaForm">
+            <form [formGroup]="consultaForm">
               <!-- Seleccionar Cita -->
               <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Seleccionar Cita Pendiente</mat-label>
@@ -71,13 +71,13 @@ import { NgZone } from '@angular/core';
 
               <mat-spinner *ngIf="cargando" diameter="40" class="spinner"></mat-spinner>
 
-            <!-- Formulario de Consulta -->
-            <form *ngIf="citaSeleccionada" [formGroup]="consultaForm">
-              <div class="cita-info">
-                <p><strong>Paciente:</strong> {{ citaSeleccionada.mascotaNombre }}</p>
-                <p><strong>Fecha:</strong> {{ citaSeleccionada.fecha | date:'longDate' }}</p>
-                <p><strong>Hora:</strong> {{ citaSeleccionada.hora }}</p>
-              </div>
+              <!-- Formulario de Consulta -->
+              <div *ngIf="citaSeleccionada">
+                <div class="cita-info">
+                  <p><strong>Paciente:</strong> {{ citaSeleccionada.mascotaNombre }}</p>
+                  <p><strong>Fecha:</strong> {{ citaSeleccionada.fecha | date:'longDate' }}</p>
+                  <p><strong>Hora:</strong> {{ citaSeleccionada.hora }}</p>
+                </div>
 
                 <!-- Diagnóstico -->
                 <mat-form-field appearance="fill" class="full-width">
@@ -118,6 +118,12 @@ import { NgZone } from '@angular/core';
                 <input matInput formControlName="duracion" placeholder="Ej: 7 días">
               </mat-form-field>
 
+              <!-- Precio del Tratamiento -->
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Precio del Tratamiento ($)</mat-label>
+                <input matInput formControlName="precio" type="number" placeholder="0.00" step="0.01">
+              </mat-form-field>
+
               <div class="form-actions">
                 <button mat-raised-button color="primary" 
                         (click)="guardarConsulta()" 
@@ -127,12 +133,13 @@ import { NgZone } from '@angular/core';
                 </button>
                 <button mat-button routerLink="/dashboard-vet">Cancelar</button>
               </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
-      </div>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
     </div>
-  `,
+  </div>
+`,
   styles: [`
     .consulta-container {
       display: flex;
@@ -292,11 +299,6 @@ export class ConsultasVetComponent implements OnInit {
     });
   }
 
-  onCitaChange() {
-    const citaId = this.consultaForm.get('citaId')?.value;
-    this.citaSeleccionada = this.citasPendientes.find(c => c.id === citaId) || null;
-  }
-
   guardarConsulta() {
     if (!this.citaSeleccionada || this.consultaForm.invalid) {
       this.snackBar.open('Por favor completa todos los campos requeridos', 'Cerrar', { duration: 3000 });
@@ -312,11 +314,13 @@ export class ConsultasVetComponent implements OnInit {
 
     // Si hay tratamiento, crearlo primero
     if (formData.tratamiento) {
-      this.tratamientoService.crearTratamiento({
+      const tratamientoData: { descripcion: string; medicamento?: string | null; duracion?: string | null; precio?: number | null } = {
         descripcion: formData.tratamiento,
-        medicamento: formData.medicamento,
-        duracion: formData.duracion
-      }).subscribe({
+        medicamento: formData.medicamento || null,
+        duracion: formData.duracion || null,
+        precio: formData.precio ? parseFloat(formData.precio) : null
+      };
+      this.tratamientoService.crearTratamiento(tratamientoData).subscribe({
         next: (tratamiento) => {
           this.registrarConsulta(tratamiento.id);
         },

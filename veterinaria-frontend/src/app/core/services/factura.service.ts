@@ -3,31 +3,49 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-const API_URL = `${environment.apiUrl}/facturas`;
-
 export interface Factura {
   id: number;
-  id_usuario: number;
-  id_consulta: number;
-  id_tratamiento: number | null;
   fecha: string;
   total: number;
+  mascota?: string;
+  tratamiento?: string;
+  diagnostico?: string;
+  observaciones?: string;
+  usuario_nombre?: string;
 }
 
-export interface FacturaDetalle extends Factura {
+export interface FacturaDetalle {
+  id: number;
+  fecha: string;
+  total: number;
   mascota_nombre: string;
+  mascota_especie: string;
+  mascota_raza: string;
+  mascota_edad: number;
+  // Alias para compatibilidad con componente
+  especie?: string;
+  raza?: string;
+  edad?: number;
+  veterinario_nombre: string;
+  especialidad: string;
   diagnostico: string;
   observaciones: string;
-  fecha_cita: string;
-  veterinario_nombre: string;
-  tratamiento?: string;
-  medicamento?: string;
-  duracion?: string;
+  tratamiento_desc: string;
+  medicamento: string;
+  duracion: string;
+  dueno_nombre: string;
+  email: string;
+  tel: string;
+  // Alias para compatibilidad con componente
+  dueno_email?: string;
+  dueno_tel?: string;
+  cita_fecha?: string;
+  cita_hora?: string;
 }
 
 export interface CrearFacturaData {
   id_consulta: number;
-  id_tratamiento?: number | null;
+  id_tratamiento?: number;
   total: number;
 }
 
@@ -35,25 +53,49 @@ export interface CrearFacturaData {
   providedIn: 'root'
 })
 export class FacturaService {
+  private apiUrl = `${environment.apiUrl}/facturas`;
+
   constructor(private http: HttpClient) {}
 
-  obtenerFacturas(): Observable<FacturaDetalle[]> {
-    return this.http.get<FacturaDetalle[]>(`${API_URL}`);
+  /**
+   * Obtener todas las facturas del usuario
+   */
+  obtenerFacturas(): Observable<Factura[]> {
+    return this.http.get<Factura[]>(this.apiUrl);
   }
 
+  /**
+   * Obtener detalle de una factura específica
+   */
   obtenerFactura(id: number): Observable<FacturaDetalle> {
-    return this.http.get<FacturaDetalle>(`${API_URL}/${id}`);
+    return this.http.get<FacturaDetalle>(`${this.apiUrl}/${id}`);
   }
 
-  crearFactura(data: CrearFacturaData): Observable<Factura> {
-    return this.http.post<Factura>(`${API_URL}`, data);
+  /**
+   * Crear una nueva factura
+   */
+  crearFactura(datos: CrearFacturaData): Observable<any> {
+    return this.http.post(this.apiUrl, datos);
   }
 
-  obtenerFacturasPorConsulta(consultaId: number): Observable<Factura[]> {
-    return this.http.get<Factura[]>(`${API_URL}/consulta/${consultaId}`);
+  /**
+   * Actualizar una factura
+   */
+  actualizarFactura(id: number, total: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, { total });
   }
 
-  actualizarMontoFactura(id: number, total: number): Observable<any> {
-    return this.http.put(`${API_URL}/${id}`, { total });
+  /**
+   * Eliminar una factura
+   */
+  eliminarFactura(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Obtener facturas por consulta
+   */
+  obtenerFacturasPorConsulta(id_consulta: number): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/consulta/${id_consulta}`);
   }
 }

@@ -12,7 +12,7 @@ import { CitasVetComponent } from './features/vet/citas-vet.component';
 import { ConsultasVetComponent } from './features/vet/consultas-vet.component';
 import { HistorialMascotaVetComponent } from './features/vet/historial-mascota-vet.component';
 import { ListaFacturasComponent } from './features/mascotas/lista-facturas.component';
-import { FacturaDetalleComponent } from './features/mascotas/factura-detalle.component';
+import { FacturaDetalleComponent } from './features/facturas/factura-detalle.component';
 import { FacturasVetComponent } from './features/vet/facturas-vet.component';
 import { FacturaDetalleVetComponent } from './features/vet/factura-detalle-vet.component';
 import { authGuard } from './core/guards/auth.guard';

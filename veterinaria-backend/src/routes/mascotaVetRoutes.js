@@ -19,6 +19,14 @@ router.get(
   mascotaVetController.vertodasMascotas
 );
 
+// GET /api/vet/mascotas/buscar - Buscar mascotas por nombre o dueño
+router.get(
+  '/mascotas/buscar',
+  authMiddleware,
+  veterinarioMiddleware,
+  mascotaVetController.buscarMascotas
+);
+
 // GET /api/vet/mascotas/:id - Ver una mascota específica
 router.get(
   '/mascotas/:id',
@@ -27,7 +35,7 @@ router.get(
   mascotaVetController.obtenerMascota
 );
 
-// GET /api/vet/mascotas/:id/historial - Ver historial de una mascota
+// GET /api/vet/mascotas/:id/historial - Ver historial completo de una mascota
 router.get(
   '/mascotas/:id/historial',
   authMiddleware,

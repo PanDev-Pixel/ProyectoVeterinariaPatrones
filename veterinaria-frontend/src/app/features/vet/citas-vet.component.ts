@@ -56,6 +56,17 @@ import { NgZone } from '@angular/core';
                             <p>hora: {{ cita.hora }}</p>
                             <p>Estado: {{ cita.estado }}</p>
                         </mat-card-content>
+                        <mat-card-actions>
+                            <button 
+                                mat-raised-button 
+                                color="primary"
+                                *ngIf="cita.estado === 'pendiente'"
+                                (click)="crearConsulta(cita.id)"
+                            >
+                                <mat-icon>note_add</mat-icon>
+                                Nueva Consulta
+                            </button>
+                        </mat-card-actions>
                     </mat-card>
                 </div>
             </div>
@@ -86,9 +97,17 @@ import { NgZone } from '@angular/core';
         }
         .cita-card {
             transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
         }
         .cita-card:hover {
             transform: translateY(-4px);
+        }
+        mat-card-actions {
+            padding: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
         }
     `]
 })
@@ -123,6 +142,11 @@ export class CitasVetComponent implements OnInit {
                     this.cdr.detectChanges();
                 });
             }
+        });
+    }
+    crearConsulta(citaId: number) {
+        this.ngZone.run(() => {
+            this.router.navigate(['/consultas-vet']);
         });
     }
     goBack() {

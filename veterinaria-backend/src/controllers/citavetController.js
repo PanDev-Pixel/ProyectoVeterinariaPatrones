@@ -5,12 +5,21 @@ exports.verCitas = async (req, res) => {
         const userId = req.user.id;
         const connection = await pool.getConnection();
         const [citas] = await connection.query(
-            `SELECT c.id, c.fecha, c.hora, c.estado, v.especialidad, u.nombre as veterinario, m.nombre as mascotaNombre, usu.nombre as dueno_mascota, usu.tel
+            `SELECT 
+                c.id, 
+                c.fecha, 
+                c.hora, 
+                c.estado, 
+                v.especialidad, 
+                u.nombre as veterinario, 
+                m.nombre as mascotaNombre, 
+                usu.nombre as dueno_mascota, 
+                usu.tel
              FROM cita c
-             JOIN veterinario v ON c.id_veterinario = v.id_usuario
-             LEFT JOIN usuario u ON v.id_usuario = u.id
-             JOIN mascota m ON c.id_mascota = m.id
-             JOIN usuario usu ON c.id_usuario = usu.id
+             INNER JOIN veterinario v ON c.id_veterinario = v.id_usuario
+             INNER JOIN usuario u ON v.id_usuario = u.id
+             INNER JOIN mascota m ON c.id_mascota = m.id
+             INNER JOIN usuario usu ON c.id_usuario = usu.id
              WHERE c.id_veterinario = ?
              ORDER BY c.fecha DESC`,
             [userId]

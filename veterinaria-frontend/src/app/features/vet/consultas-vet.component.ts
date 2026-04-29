@@ -71,13 +71,13 @@ import { NgZone } from '@angular/core';
 
               <mat-spinner *ngIf="cargando" diameter="40" class="spinner"></mat-spinner>
 
-              <!-- Formulario de Consulta -->
-              <div *ngIf="citaSeleccionada">
-                <div class="cita-info">
-                  <p><strong>Paciente:</strong> {{ citaSeleccionada.mascotaNombre }}</p>
-                  <p><strong>Fecha:</strong> {{ citaSeleccionada.fecha | date:'longDate' }}</p>
-                  <p><strong>Hora:</strong> {{ citaSeleccionada.hora }}</p>
-                </div>
+            <!-- Formulario de Consulta -->
+            <form *ngIf="citaSeleccionada" [formGroup]="consultaForm">
+              <div class="cita-info">
+                <p><strong>Paciente:</strong> {{ citaSeleccionada.mascotaNombre }}</p>
+                <p><strong>Fecha:</strong> {{ citaSeleccionada.fecha | date:'longDate' }}</p>
+                <p><strong>Hora:</strong> {{ citaSeleccionada.hora }}</p>
+              </div>
 
                 <!-- Diagnóstico -->
                 <mat-form-field appearance="fill" class="full-width">
@@ -112,29 +112,22 @@ import { NgZone } from '@angular/core';
                   <input matInput formControlName="medicamento" placeholder="Ej: Amoxicilina 500mg">
                 </mat-form-field>
 
-                <!-- Duración -->
-                <mat-form-field appearance="fill" class="full-width">
-                  <mat-label>Duración del tratamiento</mat-label>
-                  <input matInput formControlName="duracion" placeholder="Ej: 7 días">
-                </mat-form-field>
+              <!-- Duración -->
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Duración del tratamiento</mat-label>
+                <input matInput formControlName="duracion" placeholder="Ej: 7 días">
+              </mat-form-field>
 
-                <!-- Precio del Tratamiento -->
-                <mat-form-field appearance="fill" class="full-width">
-                  <mat-label>Precio del Tratamiento ($)</mat-label>
-                  <input matInput formControlName="precio" type="number" placeholder="0.00" step="0.01">
-                </mat-form-field>
-
-                <div class="form-actions">
-                  <button mat-raised-button color="primary" 
-                          (click)="guardarConsulta()" 
-                          [disabled]="!consultaForm.valid || guardando">
-                    <mat-icon>save</mat-icon> 
-                    {{ guardando ? 'Guardando...' : 'Guardar Consulta' }}
-                  </button>
-                  <button mat-button routerLink="/dashboard-vet">Cancelar</button>
-                </div>
+              <div class="form-actions">
+                <button mat-raised-button color="primary" 
+                        (click)="guardarConsulta()" 
+                        [disabled]="!consultaForm.valid || guardando">
+                  <mat-icon>save</mat-icon> 
+                  {{ guardando ? 'Guardando...' : 'Guardar Consulta' }}
+                </button>
+                <button mat-button routerLink="/dashboard-vet">Cancelar</button>
               </div>
-            </div>
+            </form>
           </mat-card-content>
         </mat-card>
       </div>
@@ -299,6 +292,11 @@ export class ConsultasVetComponent implements OnInit {
     });
   }
 
+  onCitaChange() {
+    const citaId = this.consultaForm.get('citaId')?.value;
+    this.citaSeleccionada = this.citasPendientes.find(c => c.id === citaId) || null;
+  }
+
   guardarConsulta() {
     if (!this.citaSeleccionada || this.consultaForm.invalid) {
       this.snackBar.open('Por favor completa todos los campos requeridos', 'Cerrar', { duration: 3000 });
@@ -313,66 +311,31 @@ export class ConsultasVetComponent implements OnInit {
     console.log('¿Hay tratamiento?:', !!formData.tratamiento);
 
     // Si hay tratamiento, crearlo primero
-    if (formData.tratamiento && formData.tratamiento.trim()) {
-      console.log('🏥 Creando tratamiento...');
-      console.log('Datos del tratamiento:', {
-        descripcion: formData.tratamiento,
-        medicamento: formData.medicamento,
-        duracion: formData.duracion,
-        precio: formData.precio
-      });
-
+    if (formData.tratamiento) {
       this.tratamientoService.crearTratamiento({
         descripcion: formData.tratamiento,
-        medicamento: formData.medicamento || '',
-        duracion: formData.duracion || '',
-        precio: formData.precio ? parseFloat(formData.precio) : undefined
+        medicamento: formData.medicamento,
+        duracion: formData.duracion
       }).subscribe({
-        next: (respuesta: any) => {
-          console.log('✅ Tratamiento creado exitosamente:', respuesta);
-          
-          // Extraer el ID dependiendo del formato de respuesta
-          const tratamientoObj = respuesta.tratamiento || respuesta;
-          const idTratamiento = tratamientoObj?.id;
-          
-          console.log('📊 Objeto tratamiento:', tratamientoObj);
-          console.log('🆔 ID del tratamiento extraído:', idTratamiento);
-          
-          if (!idTratamiento) {
-            console.error('❌ No se pudo extraer el ID del tratamiento. Respuesta completa:', respuesta);
-            this.guardando = false;
-            this.snackBar.open('Error: No se recibió el ID del tratamiento', 'Cerrar', { duration: 3000 });
-            return;
-          }
-          
-          this.registrarConsulta(idTratamiento);
+        next: (tratamiento) => {
+          this.registrarConsulta(tratamiento.id);
         },
         error: (error) => {
           this.ngZone.run(() => {
             console.error('❌ Error al crear tratamiento:', error);
             this.guardando = false;
-            this.snackBar.open('Error al crear tratamiento', 'Cerrar', { duration: 3000 });
             this.cdr.detectChanges();
+            this.snackBar.open('Error al crear tratamiento', 'Cerrar', { duration: 3000 });
           });
         }
       });
     } else {
-      console.log('⏭️  Sin tratamiento, registrando consulta sin ID de tratamiento');
       this.registrarConsulta(null);
     }
   }
 
   private registrarConsulta(idTratamiento: number | null) {
     const formData = this.consultaForm.value;
-    
-    console.log('📝 registrarConsulta llamado');
-    console.log('idTratamiento recibido:', idTratamiento);
-    console.log('Datos a enviar al servidor:', {
-      cita_id: this.citaSeleccionada!.id,
-      diagnostico: formData.diagnostico,
-      observaciones: formData.observaciones,
-      id_tratamiento: idTratamiento
-    });
     
     this.citaVetService.registrarConsulta(this.citaSeleccionada!.id, {
       diagnostico: formData.diagnostico,
@@ -383,6 +346,7 @@ export class ConsultasVetComponent implements OnInit {
         this.ngZone.run(() => {
           console.log('✅ Consulta registrada exitosamente');
           this.guardando = false;
+          console.log('✅ Consulta registrada exitosamente');
           this.snackBar.open('✅ Consulta registrada exitosamente', 'Cerrar', { duration: 3000 });
           this.router.navigate(['/dashboard-vet']);
         });

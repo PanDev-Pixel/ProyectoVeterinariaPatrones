@@ -354,10 +354,13 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   }
 
   private formatearFecha(fecha: Date | string): string {
-    const f = new Date(fecha);
+    // Convertir a Date si es string
+    const f = fecha instanceof Date ? fecha : new Date(fecha);
+    // Usar la fecha en la zona horaria local del usuario
     const year = f.getFullYear();
     const month = String(f.getMonth() + 1).padStart(2, '0');
     const day = String(f.getDate()).padStart(2, '0');
+    // Retornar en formato YYYY-MM-DD
     return `${year}-${month}-${day}`;
   }
 

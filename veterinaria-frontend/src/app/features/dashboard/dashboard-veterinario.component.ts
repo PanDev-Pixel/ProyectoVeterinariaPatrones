@@ -283,8 +283,11 @@ export class DashboardVeterinarioComponent implements OnInit, OnDestroy {
         });
       },
       error: (error) => {
-        console.error('Error al cargar perfil:', error);
-        this.especialidad = 'Medicina General';
+        this.ngZone.run(() => {
+          console.error('Error al cargar perfil:', error);
+          this.especialidad = 'Medicina General';
+          this.cdr.detectChanges();
+        });
       }
     });
   }

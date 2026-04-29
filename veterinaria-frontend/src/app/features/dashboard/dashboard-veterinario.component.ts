@@ -72,6 +72,19 @@ interface MascotaConDueno extends MascotaVet {
               <button mat-button color="primary">Nueva Consulta</button>
             </mat-card-actions>
           </mat-card>
+
+          <mat-card routerLink="/facturas-vet" class="option-card">
+            <mat-card-header>
+              <mat-icon class="large-icon">receipt_long</mat-icon>
+            </mat-card-header>
+            <mat-card-title>Facturas</mat-card-title>
+            <mat-card-content>
+              <p>Revisa todas tus facturas</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Facturas</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
 
         <!-- SECCIÓN: MIS PACIENTES (TODAS LAS MASCOTAS) -->

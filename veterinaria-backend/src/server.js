@@ -18,6 +18,7 @@ const citaVetRoutes = require('./routes/citaVetRoutes');
 const mascotaVetRoutes = require('./routes/mascotaVetRoutes');
 const tratamientoRoutes = require('./routes/tratamientoRoutes');
 const veterinarioRoutes = require('./routes/veterinarioRoutes');
+const facturaRoutes = require('./routes/facturaRoutes');
 
 // Usar rutas
 app.use('/api/auth', authRoutes);
@@ -27,7 +28,8 @@ app.use('/api/consultas', consultaRoutes);
 app.use('/api/vet', citaVetRoutes);
 app.use('/api/vet', mascotaVetRoutes);
 app.use('/api/tratamientos', tratamientoRoutes);
-app.use('/api/veterinarios', veterinarioRoutes); 
+app.use('/api/veterinarios', veterinarioRoutes);
+app.use('/api/facturas', facturaRoutes); 
 
 // Ruta de prueba
 app.get('/', (req, res) => {

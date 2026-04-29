@@ -81,7 +81,7 @@ exports.registrarConsulta = async (req, res) => {
         // Insertar la consulta con estructura correcta
         console.log('💾 [REGISTRAR CONSULTA] Insertando en BD con id_tratamiento:', id_tratamiento || null);
         
-        await connection.query(
+        const [resultadoConsulta] = await connection.query(
             `INSERT INTO consulta (id_cita, diagnostico, observaciones, id_tratamiento)
              VALUES (?, ?, ?, ?)`,
             [id, diagnostico, observaciones, id_tratamiento || null]
@@ -95,6 +95,52 @@ exports.registrarConsulta = async (req, res) => {
         
         console.log('✅ [REGISTRAR CONSULTA] Consulta registrada exitosamente en BD');
         console.log('   - ID de tratamiento guardado:', id_tratamiento || null);
+
+        // ============= GENERAR FACTURA AUTOMÁTICAMENTE =============
+        if (id_tratamiento) {
+            try {
+                console.log('💰 [REGISTRAR CONSULTA] Generando factura automática...');
+                
+                // Obtener precio del tratamiento
+                const [tratamiento] = await connection.query(
+                    'SELECT precio FROM tratamiento WHERE id = ?',
+                    [id_tratamiento]
+                );
+
+                let total = 0;
+                if (tratamiento.length > 0) {
+                    total = tratamiento[0].precio || 0;
+                }
+
+                // Crear la factura automáticamente
+                const fecha = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                
+                // Obtener el id_usuario de la cita
+                const [citaData] = await connection.query(
+                    'SELECT id_usuario FROM cita WHERE id = ?',
+                    [id]
+                );
+
+                if (citaData.length > 0) {
+                    const id_usuario = citaData[0].id_usuario;
+
+                    await connection.query(
+                        `INSERT INTO factura (id_usuario, id_consulta, id_tratamiento, fecha, total)
+                         VALUES (?, ?, ?, ?, ?)`,
+                        [id_usuario, resultadoConsulta.insertId, id_tratamiento, fecha, total]
+                    );
+
+                    console.log('✅ [REGISTRAR CONSULTA] Factura generada automáticamente');
+                    console.log('   - Total: $' + total);
+                }
+            } catch (errorFactura) {
+                console.error('⚠️  [REGISTRAR CONSULTA] Error al generar factura automática:', errorFactura.message);
+                // No lanzamos el error, solo lo registramos. La consulta ya fue creada exitosamente.
+            }
+        } else {
+            console.log('ℹ️  [REGISTRAR CONSULTA] Sin tratamiento, por lo tanto sin factura');
+        }
+        // ==========================================================
 
         connection.release();
         res.status(201).json({

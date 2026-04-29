@@ -7,7 +7,7 @@ const pool = require('../config/database');
  */
 exports.crearTratamiento = async (req, res) => {
     try {
-        const { descripcion, medicamento, duracion } = req.body;
+        const { descripcion, medicamento, duracion, precio } = req.body;
 
         // Validar campo requerido: solo descripcion es obligatoria
         if (!descripcion) {
@@ -19,15 +19,16 @@ exports.crearTratamiento = async (req, res) => {
         console.log('📝 [CREAR TRATAMIENTO] Datos recibidos:', {
             descripcion,
             medicamento: medicamento || 'N/A',
-            duracion: duracion || 'N/A'
+            duracion: duracion || 'N/A',
+            precio: precio || 'N/A'
         });
 
         const connection = await pool.getConnection();
 
         const [resultado] = await connection.query(
-            `INSERT INTO tratamiento (descripcion, medicamento, duracion) 
-             VALUES (?, ?, ?)`,
-            [descripcion, medicamento || null, duracion || null]
+            `INSERT INTO tratamiento (descripcion, medicamento, duracion, precio) 
+             VALUES (?, ?, ?, ?)`,
+            [descripcion, medicamento || null, duracion || null, precio || null]
         );
 
         const [tratamientos] = await connection.query(

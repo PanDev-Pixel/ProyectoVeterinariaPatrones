@@ -73,6 +73,32 @@ import { AuthService } from '../../core/services/auth.service';
               <button mat-button color="primary">Nueva Cita</button>
             </mat-card-actions>
           </mat-card>
+
+          <mat-card routerLink="/citas" class="option-card">
+            <mat-card-header>
+              <mat-icon class="large-icon">calendar_today</mat-icon>
+            </mat-card-header>
+            <mat-card-title>Mis Citas</mat-card-title>
+            <mat-card-content>
+              <p>Ve el historial de tus citas</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Citas</button>
+            </mat-card-actions>
+          </mat-card>
+
+          <mat-card routerLink="/facturas" class="option-card">
+            <mat-card-header>
+              <mat-icon class="large-icon">receipt_long</mat-icon>
+            </mat-card-header>
+            <mat-card-title>Facturas</mat-card-title>
+            <mat-card-content>
+              <p>Consulta todas tus facturas</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Facturas</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
     </div>

@@ -118,6 +118,12 @@ import { NgZone } from '@angular/core';
                   <input matInput formControlName="duracion" placeholder="Ej: 7 días">
                 </mat-form-field>
 
+                <!-- Precio del Tratamiento -->
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Precio del Tratamiento ($)</mat-label>
+                  <input matInput formControlName="precio" type="number" placeholder="0.00" step="0.01">
+                </mat-form-field>
+
                 <div class="form-actions">
                   <button mat-raised-button color="primary" 
                           (click)="guardarConsulta()" 
@@ -224,7 +230,8 @@ export class ConsultasVetComponent implements OnInit {
       observaciones: ['', Validators.required],
       tratamiento: [''],
       medicamento: [''],
-      duracion: ['']
+      duracion: [''],
+      precio: ['']
     });
   }
 
@@ -311,13 +318,15 @@ export class ConsultasVetComponent implements OnInit {
       console.log('Datos del tratamiento:', {
         descripcion: formData.tratamiento,
         medicamento: formData.medicamento,
-        duracion: formData.duracion
+        duracion: formData.duracion,
+        precio: formData.precio
       });
 
       this.tratamientoService.crearTratamiento({
         descripcion: formData.tratamiento,
         medicamento: formData.medicamento || '',
-        duracion: formData.duracion || ''
+        duracion: formData.duracion || '',
+        precio: formData.precio ? parseFloat(formData.precio) : undefined
       }).subscribe({
         next: (respuesta: any) => {
           console.log('✅ Tratamiento creado exitosamente:', respuesta);

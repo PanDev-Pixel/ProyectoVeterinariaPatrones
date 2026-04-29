@@ -11,6 +11,10 @@ import { CrearCitaComponent } from './features/citas/crear-cita.component';
 import { CitasVetComponent } from './features/vet/citas-vet.component';
 import { ConsultasVetComponent } from './features/vet/consultas-vet.component';
 import { HistorialMascotaVetComponent } from './features/vet/historial-mascota-vet.component';
+import { ListaFacturasComponent } from './features/mascotas/lista-facturas.component';
+import { FacturaDetalleComponent } from './features/mascotas/factura-detalle.component';
+import { FacturasVetComponent } from './features/vet/facturas-vet.component';
+import { FacturaDetalleVetComponent } from './features/vet/factura-detalle-vet.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -25,12 +29,16 @@ export const routes: Routes = [
   { path: 'mascotas/:id/historial', component: HistorialMedicoComponent, canActivate: [authGuard] },
   { path: 'citas', component: ListaCitasComponent, canActivate: [authGuard] },
   { path: 'citas/crear', component: CrearCitaComponent, canActivate: [authGuard] },
+  { path: 'facturas', component: ListaFacturasComponent, canActivate: [authGuard] },
+  { path: 'factura-detalle/:id', component: FacturaDetalleComponent, canActivate: [authGuard] },
   
   // Veterinario
   { path: 'dashboard-vet', component: DashboardVeterinarioComponent, canActivate: [authGuard] },
   { path: 'vet/citas', component: CitasVetComponent, canActivate: [authGuard] },
   { path: 'vet/consultas', component: ConsultasVetComponent, canActivate: [authGuard] },
   { path: 'vet/historial/:id', component: HistorialMascotaVetComponent, canActivate: [authGuard] },
+  { path: 'facturas-vet', component: FacturasVetComponent, canActivate: [authGuard] },
+  { path: 'factura-detalle-vet/:id', component: FacturaDetalleVetComponent, canActivate: [authGuard] },
   
   { path: '**', redirectTo: '/login' }
 ];

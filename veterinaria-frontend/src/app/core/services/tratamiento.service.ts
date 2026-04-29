@@ -8,6 +8,7 @@ export interface Tratamiento {
     descripcion: string;
     medicamento?: string;
     duracion?: string;
+    precio?: number;
     fecha_creacion?: string;
 }
 
@@ -15,6 +16,7 @@ export interface CrearTratamientoData {
     descripcion: string;
     medicamento?: string;
     duracion?: string;
+    precio?: number;
 }
 
 @Injectable({

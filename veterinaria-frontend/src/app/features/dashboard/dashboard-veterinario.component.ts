@@ -38,7 +38,7 @@ interface MascotaConDueno extends MascotaVet {
         <span>Clínica Veterinaria - Dashboard Veterinario</span>
         <span class="spacer"></span>
         <button mat-icon-button (click)="logout()" matTooltip="Cerrar sesión">
-          <mat-icon>logout</mat-icon>
+          <mat-icon>exit_to_app</mat-icon>
         </button>
       </mat-toolbar>
 
@@ -148,6 +148,7 @@ interface MascotaConDueno extends MascotaVet {
       display: flex;
       flex-direction: column;
       height: 100vh;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
     }
 
     .spacer {
@@ -158,47 +159,76 @@ interface MascotaConDueno extends MascotaVet {
       flex: 1;
       overflow-y: auto;
       padding: 30px;
-      background-color: #f5f5f5;
+      background: transparent;
+      min-height: calc(100vh - 64px);
     }
 
     h1 {
-      color: #333;
+      color: #4a4a4a;
       margin-bottom: 5px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 2.2rem;
+      background: linear-gradient(135deg, #4a90e2 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     h2 {
-      color: #555;
+      color: #4a4a4a;
       margin-top: 40px;
       margin-bottom: 20px;
-      border-bottom: 2px solid #e91e63;
+      border-bottom: 3px solid #4a90e2;
       padding-bottom: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 1.5rem;
     }
 
     .opciones-principales {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
       margin-bottom: 40px;
     }
 
     .option-card {
       cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
+      background: #ffffff;
+      border: 1px solid #4a90e2;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(255, 183, 197, 0.15);
+      padding: 24px;
+      text-align: center;
     }
 
     .option-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 8px 30px rgba(255, 183, 197, 0.25);
+      border-color: #2196f3;
     }
 
     .mascotas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
     }
 
     .mascota-card {
-      border-left: 4px solid #e91e63;
+      background: #ffffff;
+      border: 1px solid #4a90e2;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(255, 183, 197, 0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-left: 4px solid #4a90e2;
+    }
+
+    .mascota-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(255, 183, 197, 0.25);
+      border-left-color: #2196f3;
     }
 
     .mascota-card mat-card-header {
@@ -208,10 +238,14 @@ interface MascotaConDueno extends MascotaVet {
     }
 
     .pet-icon {
-      font-size: 40px;
-      width: 40px;
-      height: 40px;
-      color: #e91e63;
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: #4a90e2;
+      background: linear-gradient(135deg, #4a90e2 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .header-info {
@@ -220,19 +254,23 @@ interface MascotaConDueno extends MascotaVet {
 
     .subtitle {
       font-size: 12px;
-      color: #999;
+      color: #666666;
       margin: 0;
+      font-family: 'Inter', sans-serif;
     }
 
     .info-item {
       margin: 8px 0;
       font-size: 14px;
+      color: #4a4a4a;
+      font-family: 'Inter', sans-serif;
     }
 
     .loading, .empty-state {
       text-align: center;
       padding: 40px;
-      color: #999;
+      color: #666666;
+      font-family: 'Inter', sans-serif;
     }
 
     mat-card-actions {
@@ -242,6 +280,43 @@ interface MascotaConDueno extends MascotaVet {
 
     mat-card-actions button {
       flex: 1;
+      background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 50%, #e3f2fd 100%);
+      color: #4a4a4a;
+
+  mat-card-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  mat-card-actions button {
+    flex: 1;
+    background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 50%, #e3f2fd 100%);
+    color: #4a4a4a;
+    border: 1px solid #4a90e2;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+  }
+      color: #4a90e2;
+      margin: 16px 0;
+      background: linear-gradient(135deg, #4a90e2 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    mat-card-title {
+      color: #4a4a4a;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 1.3rem;
+      margin: 16px 0;
+    }
+
+    mat-card-content p {
+      color: #666666;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      line-height: 1.5;
     }
   `]
 })

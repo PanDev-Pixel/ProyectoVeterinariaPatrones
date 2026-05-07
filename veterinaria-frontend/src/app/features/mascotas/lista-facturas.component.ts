@@ -115,7 +115,7 @@ import { FacturaService, Factura } from '../../core/services/factura.service';
     .content {
       flex: 1;
       padding: 30px 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #ffe0e6 0%, #fef5f7 50%, #fdf0f3 100%);
       overflow-y: auto;
       display: flex;
       justify-content: flex-start;

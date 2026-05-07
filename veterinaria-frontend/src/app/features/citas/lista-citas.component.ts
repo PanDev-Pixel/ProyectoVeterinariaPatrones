@@ -116,7 +116,7 @@ import { Subject, takeUntil } from 'rxjs';
     .content {
       flex: 1;
       padding: 30px 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
       overflow-y: auto;
     }
 
@@ -282,23 +282,29 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
-            this.snackBar.open('✅ Cita cancelada exitosamente', 'Cerrar', { duration: 3000 });
-            this.cargarCitas();
+            this.ngZone.run(() => {
+              this.snackBar.open('✅ Cita cancelada exitosamente', 'Cerrar', { duration: 3000 });
+              this.cargarCitas();
+              this.cdr.detectChanges();
+            });
           },
           error: (error) => {
-            console.error('Error al cancelar cita:', error);
-            this.snackBar.open(
-              error.error?.mensaje || 'Error al cancelar cita',
-              'Cerrar',
-              { duration: 3000 }
-            );
+            this.ngZone.run(() => {
+              console.error('Error al cancelar cita:', error);
+              this.snackBar.open(
+                error.error?.mensaje || 'Error al cancelar cita',
+                'Cerrar',
+                { duration: 3000 }
+              );
+              this.cdr.detectChanges();
+            });
           }
         });
     }
   }
 
   editarCita(id: number) {
-    this.router.navigate(['/citas', id, 'editar']);
+    this.router.navigate(['/citas/editar', id]);
   }
 
   goBack() {

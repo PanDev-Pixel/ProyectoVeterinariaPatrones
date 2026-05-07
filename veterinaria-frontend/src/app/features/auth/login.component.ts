@@ -74,6 +74,7 @@ import { NgZone } from '@angular/core';
       display: flex;
       flex-direction: column;
       height: 100vh;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
     }
 
     .login-content {
@@ -82,49 +83,127 @@ import { NgZone } from '@angular/core';
       align-items: center;
       flex: 1;
       padding: 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: transparent;
+      min-height: calc(100vh - 64px);
     }
 
     mat-card {
       width: 100%;
-      max-width: 400px;
-      padding: 30px;
-      border-radius: 8px;
+      max-width: 450px;
+      padding: 40px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #4a90e2;
+      box-shadow: 0 8px 30px rgba(74, 144, 226, 0.15);
+    }
+
+    mat-card-title {
+      color: #4a4a4a;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #4a90e2 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     mat-form-field {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      font-family: 'Inter', sans-serif;
     }
 
     .full-width {
       width: 100%;
     }
 
+    mat-form-field.mat-mdc-form-field {
+      --mat-mdc-form-field-container-color: #ffffff;
+      --mat-mdc-form-field-focus-color: #4a90e2;
+    }
+
+    mat-form-field.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+      background-color: #ffffff;
+      border: 2px solid #4a90e2;
+      border-radius: 8px;
+    }
+
+    mat-form-field.mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
+      border-color: #2196f3;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+
+    mat-label {
+      color: #666666;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+    }
+
+    mat-input {
+      font-family: 'Inter', sans-serif;
+      color: #4a4a4a;
+    }
+
     .form-actions {
-      margin-top: 20px;
+      margin-top: 30px;
       display: flex;
       gap: 10px;
     }
 
     .form-actions button {
       width: 100%;
+      background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 50%, #e3f2fd 100%);
+      color: #4a4a4a;
+      border: 1px solid #4a90e2;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+      padding: 12px 24px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .form-actions button:hover {
+      background: linear-gradient(135deg, #2196f3 0%, #4a90e2 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+    }
+
+    .form-actions button:disabled {
+      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      color: #999999;
+      transform: none;
+      box-shadow: none;
     }
 
     .register-prompt {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 24px;
       font-size: 14px;
+      color: #666666;
+      font-family: 'Inter', sans-serif;
     }
 
     .register-prompt a {
-      color: #e91e63;
+      color: #4a90e2;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .register-prompt a:hover {
+      color: #2196f3;
+      text-decoration: underline;
     }
 
     mat-spinner {
       display: inline-block;
       margin-right: 10px;
+    }
+
+    mat-spinner circle {
+      stroke: #4a90e2;
     }
   `]
 })

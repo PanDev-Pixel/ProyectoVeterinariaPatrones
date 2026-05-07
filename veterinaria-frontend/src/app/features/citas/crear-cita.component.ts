@@ -130,7 +130,9 @@ import { Subject, takeUntil } from 'rxjs';
                   <mat-icon>event</mat-icon> 
                   {{ guardando ? 'Creando cita...' : 'Agendar Cita' }}
                 </button>
-                <button mat-button routerLink="/mascotas">Cancelar</button>
+                <button mat-button (click)="goBack()">
+                  <mat-icon>cancel</mat-icon> Cancelar
+                </button>
               </div>
             </form>
           </mat-card-content>
@@ -148,7 +150,7 @@ import { Subject, takeUntil } from 'rxjs';
     .content {
       flex: 1;
       padding: 30px 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -210,6 +212,188 @@ import { Subject, takeUntil } from 'rxjs';
       margin: 0;
       color: #2e7d32;
       font-weight: 500;
+    }
+
+    /* Estilos para corregir superposición de selects */
+    mat-form-field {
+      z-index: 1;
+    }
+
+    mat-form-field .mat-mdc-select-value {
+      color: #4a4a4a !important;
+      font-weight: 500;
+    }
+
+    mat-form-field .mat-mdc-select-arrow {
+      color: #4a90e2 !important;
+    }
+
+    mat-form-field .mat-mdc-floating-label {
+      color: #666666 !important;
+      font-weight: 500;
+    }
+
+    mat-form-field.mat-focused .mat-mdc-floating-label {
+      color: #4a90e2 !important;
+    }
+
+    /* Panel del select - asegurar que aparezca encima y no sea transparente */
+    .cdk-overlay-pane {
+      z-index: 1000 !important;
+    }
+
+    mat-select .mat-mdc-select-panel {
+      background: #ffffff !important;
+      border: 2px solid #e0e0e0 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+      margin-top: 8px !important;
+      backdrop-filter: none !important;
+      opacity: 1 !important;
+    }
+
+    /* Asegurar que el contenedor del panel también sea opaco */
+    .mat-mdc-select-panel-wrapper {
+      background: #ffffff !important;
+      border-radius: 8px !important;
+    }
+
+    .mat-mdc-select-panel .mat-mdc-menu-content {
+      background: #ffffff !important;
+      border-radius: 8px !important;
+      padding: 0 !important;
+    }
+
+    mat-option {
+      color: #4a4a4a !important;
+      font-weight: 400 !important;
+      line-height: 48px !important;
+      height: 48px !important;
+    }
+
+    mat-option:hover {
+      background: #f5f5f5 !important;
+    }
+
+    mat-option.mat-mdc-option-selected {
+      background: #e3f2fd !important;
+      color: #4a90e2 !important;
+      font-weight: 500 !important;
+    }
+
+    /* Estilos agresivos para todos los paneles desplegables */
+    .cdk-overlay-container .cdk-overlay-pane {
+      background: #ffffff !important;
+      border: 2px solid #e0e0e0 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Datepicker específico - estilos ultra agresivos */
+    .mat-datepicker-content {
+      background: #ffffff !important;
+      border: 3px solid #e0e0e0 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+      backdrop-filter: none !important;
+      opacity: 1 !important;
+    }
+
+    .mat-calendar {
+      background: #ffffff !important;
+      color: #4a4a4a !important;
+    }
+
+    .mat-calendar-header {
+      background: #ffffff !important;
+      color: #4a4a4a !important;
+    }
+
+    .mat-calendar-body {
+      background: #ffffff !important;
+    }
+
+    .mat-calendar-table {
+      background: #ffffff !important;
+    }
+
+    .mat-calendar-row {
+      background: #ffffff !important;
+    }
+
+    .mat-calendar-body-cell {
+      background: #ffffff !important;
+      border: 1px solid #e0e0e0 !important;
+      color: #4a4a4a !important;
+    }
+
+    .mat-calendar-body-cell-content {
+      background: #ffffff !important;
+      color: #4a4a4a !important;
+      border: none !important;
+    }
+
+    .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+      background: #f5f5f5 !important;
+      color: #4a4a4a !important;
+    }
+
+    .mat-calendar-body-selected {
+      background: #4a90e2 !important;
+      color: #ffffff !important;
+    }
+
+    .mat-calendar-body-selected .mat-calendar-body-cell-content {
+      background: #4a90e2 !important;
+      color: #ffffff !important;
+    }
+
+    .mat-calendar-body-today {
+      background: #e3f2fd !important;
+      color: #4a90e2 !important;
+    }
+
+    .mat-calendar-body-today .mat-calendar-body-cell-content {
+      background: #e3f2fd !important;
+      color: #4a90e2 !important;
+    }
+
+    /* Forzar todos los elementos del datepicker */
+    .mat-datepicker-content * {
+      background: #ffffff !important;
+    }
+
+    .mat-calendar * {
+      background: #ffffff !important;
+    }
+
+    /* Forzar fondo en todos los overlays */
+    .cdk-overlay-backdrop {
+      background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Panel de select con máxima prioridad */
+    .mat-mdc-select-panel {
+      background: #ffffff !important;
+      border: 2px solid #e0e0e0 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .mat-mdc-select-panel * {
+      background: #ffffff !important;
+    }
+
+    .mat-mdc-option {
+      background: #ffffff !important;
+    }
+
+    .mat-mdc-option:hover {
+      background: #f5f5f5 !important;
+    }
+
+    .mat-mdc-menu-content {
+      background: #ffffff !important;
     }
   `]
 })
@@ -353,15 +537,15 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
       });
   }
 
-  private formatearFecha(fecha: Date | string): string {
-    // Convertir a Date si es string
-    const f = fecha instanceof Date ? fecha : new Date(fecha);
-    // Usar la fecha en la zona horaria local del usuario
-    const year = f.getFullYear();
-    const month = String(f.getMonth() + 1).padStart(2, '0');
-    const day = String(f.getDate()).padStart(2, '0');
-    // Retornar en formato YYYY-MM-DD
+  private formatearFecha(fecha: Date): string {
+    const year = fecha.getFullYear();
+    const month = String(fecha.getMonth() + 1).padStart(2, '0');
+    const day = String(fecha.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  goBack() {
+    this.router.navigate(['/citas']);
   }
 
   crearCita() {

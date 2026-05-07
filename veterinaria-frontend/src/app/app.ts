@@ -9,4 +9,9 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   title = 'veterinaria-frontend';
+  
+  constructor() {
+    // Aplicar clase app-container al body para efectos Sakura
+    document.body.classList.add('app-container');
+  }
 }

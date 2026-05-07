@@ -33,6 +33,20 @@ exports.crearCita = async (req, res) => {
     if (veterinarios.length === 0) {
         return res.status(404).json({ mensaje: 'El veterinario no fue encontrado' });
     }
+
+    // Verificar que no exista una cita para el mismo veterinario en la misma fecha y hora
+    const [citasExistentes] = await connection.query(
+        'SELECT id FROM cita WHERE id_veterinario = ? AND fecha = ? AND hora = ? AND estado != ?',
+        [id_veterinario, fecha, hora, 'cancelada']
+    );
+    
+    if (citasExistentes.length > 0) {
+        connection.release();
+        return res.status(409).json({ 
+            mensaje: 'Ya existe una cita programada para este veterinario en la misma fecha y hora' 
+        });
+    }
+
     // Insertar la cita
     await connection.query(
         'INSERT INTO cita (id_usuario, id_mascota, id_veterinario, fecha, hora, estado) VALUES (?, ?, ?, ?, ?, ?)',
@@ -99,12 +113,28 @@ exports.editarCita = async (req, res) => {
         const connection = await pool.getConnection();
         // Verificar que la cita exista y pertenezca al usuario
         const [citas] = await connection.query(
-            'SELECT id FROM cita WHERE id = ? AND id_usuario = ?',
+            'SELECT id, id_veterinario FROM cita WHERE id = ? AND id_usuario = ?',
             [id, userId]
         );
         if (citas.length === 0) {
             return res.status(404).json({ mensaje: 'La cita no fue encontrada o no pertenece al usuario' });
         }
+
+        const citaActual = citas[0];
+        
+        // Verificar que no exista otra cita para el mismo veterinario en la misma fecha y hora
+        const [citasExistentes] = await connection.query(
+            'SELECT id FROM cita WHERE id_veterinario = ? AND fecha = ? AND hora = ? AND id != ? AND estado != ?',
+            [citaActual.id_veterinario, fecha, hora, id, 'cancelada']
+        );
+        
+        if (citasExistentes.length > 0) {
+            connection.release();
+            return res.status(409).json({ 
+                mensaje: 'Ya existe una cita programada para este veterinario en la misma fecha y hora' 
+            });
+        }
+
         // Actualizar la cita
         await connection.query(
             'UPDATE cita SET fecha = ?, hora = ? WHERE id = ?',

@@ -9,7 +9,9 @@ export interface Cita {
   hora: string;
   estado: string;
   mascota: string;
+  mascota_id: number;
   veterinario: string;
+  descripcion?: string;
 }
 
 export interface CrearCitaData {

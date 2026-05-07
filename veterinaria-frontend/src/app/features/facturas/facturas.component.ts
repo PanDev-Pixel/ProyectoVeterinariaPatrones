@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,7 +19,6 @@ import { Subject, takeUntil } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
@@ -101,7 +100,7 @@ import { Subject, takeUntil } from 'rxjs';
     .content {
       flex: 1;
       padding: 30px 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
       overflow-y: auto;
     }
 

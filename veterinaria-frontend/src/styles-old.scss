@@ -1,0 +1,349 @@
+/* Importaciones de Angular Material */
+@use '@angular/material' as mat;
+@use '@angular/material/theming' as mat;
+
+// Definir paleta de colores pink
+$mat-pink: (
+  50: #fce4ec,
+  100: #f8bbd9,
+  200: #f48fb1,
+  300: #f06292,
+  400: #ec407a,
+  500: #e91e63,
+  600: #d81b60,
+  700: #c2185b,
+  800: #ad1457,
+  900: #880e4f,
+  A100: #ff80ab,
+  A200: #ff4081,
+  A400: #f50057,
+  A700: #c51162,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(0, 0, 0, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
+  )
+);
+
+// Definir tema personalizado
+$veterinaria-app-theme: mat.define-light-theme((
+  color: (
+    primary: mat.define-palette($mat-pink),
+    accent: mat.define-palette($mat-pink, A200, A100, A400),
+    warn: mat.define-palette(mat.$red-palette),
+  ),
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+
+// Incluir estilos base de Material
+@include mat.core();
+
+// Aplicar tema
+@include mat.all-component-themes($veterinaria-app-theme);
+
+/* Estilos globales */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', "Helvetica Neue", sans-serif;
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+  min-height: 100vh;
+}
+
+body {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+  background-attachment: fixed;
+}
+
+/* Estilos personalizados para tema pink */
+.mat-mdc-button.mat-primary {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  border: none;
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(45deg, #d81b60, #ec407a);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
+  }
+}
+
+.mat-mdc-raised-button.mat-primary {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  box-shadow: 0 3px 5px 2px rgba(233, 30, 99, 0.3);
+  
+  &:hover {
+    background: linear-gradient(45deg, #d81b60, #ec407a);
+    box-shadow: 0 5px 8px 2px rgba(233, 30, 99, 0.4);
+    transform: translateY(-1px);
+  }
+}
+
+.mat-mdc-fab.mat-primary {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  box-shadow: 0 4px 6px rgba(233, 30, 99, 0.3);
+  
+  &:hover {
+    background: linear-gradient(45deg, #d81b60, #ec407a);
+    box-shadow: 0 6px 8px rgba(233, 30, 99, 0.4);
+    transform: translateY(-2px);
+  }
+}
+
+.mat-mdc-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  overflow: hidden;
+  
+  &:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+}
+
+.mat-mdc-card-header {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  color: white;
+  padding: 16px;
+  
+  .mat-mdc-card-title {
+    color: white;
+    font-weight: 500;
+  }
+  
+  .mat-mdc-card-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.mat-mdc-form-field-outline {
+  border-color: #e91e63;
+}
+
+.mat-mdc-form-field-focus .mat-mdc-form-field-outline {
+  color: #e91e63;
+}
+
+.mat-mdc-input-element {
+  caret-color: #e91e63;
+}
+
+.mat-mdc-select-value {
+  color: #e91e63;
+}
+
+.mat-mdc-select-arrow {
+  color: #e91e63;
+}
+
+.mat-mdc-toolbar.mat-primary {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mat-mdc-tab-group .mat-mdc-tab-ink-bar {
+  background-color: #e91e63;
+}
+
+.mat-mdc-tab.mat-mdc-tab-active {
+  color: #e91e63;
+}
+
+.mat-mdc-progress-bar {
+  .mat-mdc-progress-bar-buffer {
+    background-color: #f8bbd9;
+  }
+  
+  .mat-mdc-progress-bar-fill {
+    background-color: #e91e63;
+  }
+}
+
+.mat-mdc-checkbox-checked {
+  background-color: #e91e63;
+}
+
+.mat-mdc-radio-button.mat-mdc-radio-checked .mat-mdc-radio-outer-circle {
+  border-color: #e91e63;
+}
+
+.mat-mdc-radio-button.mat-mdc-radio-checked .mat-mdc-radio-inner-circle {
+  background-color: #e91e63;
+}
+
+.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked .mat-mdc-slide-toggle-thumb {
+  background-color: #e91e63;
+}
+
+.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked .mat-mdc-slide-toggle-bar {
+  background-color: #f8bbd9;
+}
+
+.mat-mdc-paginator {
+  background: transparent;
+  border-top: 1px solid #f8bbd9;
+}
+
+.mat-mdc-table {
+  background: transparent;
+}
+
+.mat-mdc-header-cell {
+  background-color: #f8bbd9;
+  color: #880e4f;
+  font-weight: 500;
+}
+
+.mat-mdc-row:hover {
+  background-color: #fce4ec;
+}
+
+.mat-mdc-cell {
+  border-bottom-color: #f8bbd9;
+}
+
+/* SnackBar personalizado */
+.mat-mdc-snack-bar-container {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  color: white;
+  border-radius: 8px;
+  
+  &.mdc-snackbar--warning {
+    background: linear-gradient(45deg, #f44336, #ef5350);
+  }
+  
+  &.mdc-snackbar--success {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+  }
+}
+
+/* Dialog personalizado */
+.mat-mdc-dialog-container {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mat-mdc-dialog-title {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  color: white;
+  padding: 16px;
+  margin: -16px -16px 16px -16px;
+}
+
+/* Animaciones personalizadas */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Clases utilitarias */
+.gradient-bg {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pink-shadow {
+  box-shadow: 0 4px 6px rgba(233, 30, 99, 0.1);
+}
+
+.pink-shadow-hover {
+  &:hover {
+    box-shadow: 0 8px 12px rgba(233, 30, 99, 0.2);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mat-mdc-card {
+    margin: 8px;
+    border-radius: 8px;
+  }
+  
+  .mat-mdc-button {
+    width: 100%;
+    margin: 4px 0;
+  }
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8bbd9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #e91e63, #f06292);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #d81b60, #ec407a);
+}

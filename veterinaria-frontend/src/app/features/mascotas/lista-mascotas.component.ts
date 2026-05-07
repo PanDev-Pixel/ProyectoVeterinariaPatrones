@@ -95,8 +95,9 @@ import { Subject, takeUntil } from 'rxjs';
     .content {
       flex: 1;
       padding: 30px 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
       overflow-y: auto;
+      min-height: calc(100vh - 64px);
     }
 
     .loading {
@@ -137,12 +138,48 @@ import { Subject, takeUntil } from 'rxjs';
     }
 
     .mascota-card {
+      background: #ffffff;
+      border: 1px solid #4a90e2;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(255, 183, 197, 0.15);
       transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
     }
 
     .mascota-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 30px rgba(255, 183, 197, 0.25);
+      border-color: #2196f3;
+    }
+
+    mat-card-title {
+      color: #4a4a4a;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+    }
+
+    mat-card-subtitle {
+      color: #666666;
+      font-family: 'Inter', sans-serif;
+    }
+
+    mat-card-content p {
+      color: #4a4a4a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    mat-card-actions button {
+      margin-right: 10px;
+      background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 50%, #e3f2fd 100%);
+      color: #4a4a4a;
+      border: 1px solid #4a90e2;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    mat-card-actions button:hover {
+      background: linear-gradient(135deg, #2196f3 0%, #4a90e2 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
     }
 
     mat-card-actions button {

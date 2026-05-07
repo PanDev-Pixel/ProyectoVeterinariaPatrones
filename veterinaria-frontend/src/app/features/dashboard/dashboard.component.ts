@@ -26,7 +26,7 @@ import { AuthService } from '../../core/services/auth.service';
         <span>Clínica Veterinaria</span>
         <span class="spacer"></span>
         <button mat-icon-button (click)="logout()" matTooltip="Cerrar sesión">
-          <mat-icon>logout</mat-icon>
+          <mat-icon>exit_to_app</mat-icon>
         </button>
       </mat-toolbar>
 
@@ -108,6 +108,7 @@ import { AuthService } from '../../core/services/auth.service';
       display: flex;
       flex-direction: column;
       height: 100vh;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%);
     }
 
     .spacer {
@@ -117,49 +118,100 @@ import { AuthService } from '../../core/services/auth.service';
     .dashboard-content {
       flex: 1;
       padding: 40px 20px;
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: none;
+      margin: 0;
       width: 100%;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: transparent;
+      min-height: calc(100vh - 64px);
     }
 
     h1 {
-      color: #333;
+      color: #4a4a4a;
       margin-bottom: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #4a90e2 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     p {
-      color: #666;
+      color: #666666;
       margin-bottom: 30px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
     }
 
     .options-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
       margin-top: 30px;
+      padding: 0;
     }
 
     .option-card {
       cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
+      background: #ffffff;
+      border: 1px solid #4a90e2;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(255, 183, 197, 0.15);
+      padding: 24px;
+      text-align: center;
     }
 
     .option-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(-8px);
+      box-shadow: 0 8px 30px rgba(255, 183, 197, 0.25);
+      border-color: #2196f3;
     }
 
     .large-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      color: #e91e63;
-      margin: 20px 0;
+      font-size: 56px;
+      width: 56px;
+      height: 56px;
+      color: #4a90e2;
+      margin: 16px 0;
+      background: linear-gradient(135deg, #4a90e2 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     mat-icon {
-      color: #e91e63;
+      color: #4a90e2;
+    }
+
+    mat-card-title {
+      color: #4a4a4a;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 1.3rem;
+      margin: 16px 0;
+    }
+
+    mat-card-content p {
+      color: #666666;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    button {
+      background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 50%, #e3f2fd 100%);
+      color: #4a4a4a;
+      border: 1px solid #4a90e2;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #2196f3 0%, #4a90e2 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
     }
   `]
 })

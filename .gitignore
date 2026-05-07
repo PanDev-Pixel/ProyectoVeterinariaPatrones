@@ -47,8 +47,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# ==========================================
-# DOCUMENTACIÓN & MARKDOWN - SOLO LOCAL
-# ==========================================
 *.md
 

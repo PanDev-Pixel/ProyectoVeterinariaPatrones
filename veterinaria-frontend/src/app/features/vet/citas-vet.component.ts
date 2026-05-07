@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,7 +18,6 @@ import { NgZone } from '@angular/core';
     standalone: true,
     imports: [
         CommonModule,
-        RouterLink,
         MatToolbarModule,
         MatButtonModule,
         MatCardModule,

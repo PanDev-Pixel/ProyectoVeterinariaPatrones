@@ -8,6 +8,7 @@ import { AgregarMascotaComponent } from './features/mascotas/agregar-mascota.com
 import { HistorialMedicoComponent } from './features/mascotas/historial-medico.component';
 import { ListaCitasComponent } from './features/citas/lista-citas.component';
 import { CrearCitaComponent } from './features/citas/crear-cita.component';
+import { EditarCitaComponent } from './features/citas/editar-cita.component';
 import { CitasVetComponent } from './features/vet/citas-vet.component';
 import { ConsultasVetComponent } from './features/vet/consultas-vet.component';
 import { HistorialMascotaVetComponent } from './features/vet/historial-mascota-vet.component';
@@ -29,6 +30,7 @@ export const routes: Routes = [
   { path: 'mascotas/:id/historial', component: HistorialMedicoComponent, canActivate: [authGuard] },
   { path: 'citas', component: ListaCitasComponent, canActivate: [authGuard] },
   { path: 'citas/crear', component: CrearCitaComponent, canActivate: [authGuard] },
+  { path: 'citas/editar/:id', component: EditarCitaComponent, canActivate: [authGuard] },
   { path: 'facturas', component: ListaFacturasComponent, canActivate: [authGuard] },
   { path: 'factura-detalle/:id', component: FacturaDetalleComponent, canActivate: [authGuard] },
   

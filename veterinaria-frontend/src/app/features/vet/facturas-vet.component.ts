@@ -121,7 +121,7 @@ import { FacturaService, Factura } from '../../core/services/factura.service';
     .content { 
       flex: 1; 
       padding: 30px 20px; 
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%); 
       overflow-y: auto; 
     }
     .facturas-card { 

@@ -942,3 +942,123 @@ font-family: var(--font-primary);
   border-radius: 8px !important;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
 }
+
+/* Estilos ultra agresivos para eliminar colores rosa */
+body, html {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%) !important;
+  background-color: #e3f2fd !important;
+}
+
+/* Eliminar cualquier fondo rosa en toda la aplicación */
+* {
+  background-color: transparent !important;
+}
+
+/* Establecer fondos correctos */
+app-facturas, .facturas-container, .content {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%) !important;
+  background-color: #e3f2fd !important;
+}
+
+app-facturas * {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+app-facturas .factura-card {
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+app-facturas mat-card {
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 12px !important;
+}
+
+app-facturas mat-card-header {
+  background: #ffffff !important;
+}
+
+app-facturas mat-card-title {
+  color: #4a4a4a !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+app-facturas mat-card-subtitle {
+  color: #666666 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+app-facturas mat-card-content {
+  background: #ffffff !important;
+  color: #4a4a4a !important;
+}
+
+app-facturas mat-card-actions {
+  background: #ffffff !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+app-facturas .facturas-container {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%) !important;
+}
+
+app-facturas .content {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 50%, #f8fafc 100%) !important;
+}
+
+app-facturas button {
+  &.mat-raised-button {
+    background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 100%) !important;
+    color: white !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, #2196f3 0%, #4a90e2 100%) !important;
+      color: white !important;
+      
+      mat-icon {
+        color: white !important;
+        opacity: 1 !important;
+      }
+    }
+    
+    mat-icon {
+      color: white !important;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+  }
+  
+  &.mat-button {
+    color: #4a90e2 !important;
+    
+    &:hover {
+      color: #4a90e2 !important;
+      background: rgba(74, 144, 226, 0.1) !important;
+      
+      mat-icon {
+        color: #4a90e2 !important;
+        opacity: 1 !important;
+      }
+    }
+    
+    mat-icon {
+      color: #4a90e2 !important;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* Forzar íconos siempre visibles */
+app-facturas mat-icon {
+  color: inherit !important;
+  opacity: 1 !important;
+  transition: none !important;
+  display: inline-flex !important;
+  visibility: visible !important;
+}

@@ -1,0 +1,172 @@
+<div class="admin-dashboard">
+  <mat-toolbar color="primary" class="dashboard-toolbar">
+    <mat-icon>dashboard</mat-icon>
+    <span>Panel de Administración</span>
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="refreshData()" matTooltip="Actualizar datos">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button mat-icon-button (click)="goBack()" matTooltip="Volver">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div class="dashboard-content">
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando estadísticas...</p>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div *ngIf="!loading" class="stats-grid">
+      <mat-card class="stat-card primary">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>people</mat-icon>
+          <mat-card-title>Usuarios Totales</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.totalUsuarios }}</div>
+          <div class="stat-subtitle">Clientes registrados</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card secondary">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>medical_services</mat-icon>
+          <mat-card-title>Veterinarios</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.totalVeterinarios }}</div>
+          <div class="stat-subtitle">Personal médico</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card accent">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>pets</mat-icon>
+          <mat-card-title>Mascotas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.totalMascotas }}</div>
+          <div class="stat-subtitle">Pacientes registrados</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card warn">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>event</mat-icon>
+          <mat-card-title>Citas Totales</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.totalCitas }}</div>
+          <div class="stat-subtitle">Historial completo</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Estadísticas adicionales -->
+    <div *ngIf="!loading" class="secondary-stats">
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>today</mat-icon>
+          <mat-card-title>Citas Hoy</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.citasHoy }}</div>
+          <div class="stat-subtitle">Agendadas para hoy</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>pending</mat-icon>
+          <mat-card-title>Pendientes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.citasPendientes }}</div>
+          <div class="stat-subtitle">Citas por confirmar</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>check_circle</mat-icon>
+          <mat-card-title>Completadas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.citasCompletadas }}</div>
+          <div class="stat-subtitle">Citas realizadas</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>payments</mat-icon>
+          <mat-card-title>Ingresos Mes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">${{ stats.ingresosMes.toLocaleString() }}</div>
+          <div class="stat-subtitle">Facturación actual</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div *ngIf="!loading" class="quick-actions">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Acciones Rápidas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="actions-grid">
+            <button mat-raised-button color="primary" (click)="navigateTo('/admin/usuarios')">
+              <mat-icon>people</mat-icon>
+              Gestionar Usuarios
+            </button>
+            <button mat-raised-button color="accent" (click)="navigateTo('/admin/veterinarios')">
+              <mat-icon>medical_services</mat-icon>
+              Gestionar Veterinarios
+            </button>
+            <button mat-raised-button color="warn" (click)="navigateTo('/admin/tratamientos')">
+              <mat-icon>medication</mat-icon>
+              Gestionar Tratamientos
+            </button>
+            <button mat-raised-button color="primary" (click)="navigateTo('/admin/facturacion')">
+              <mat-icon>receipt</mat-icon>
+              Ver Facturación
+            </button>
+            <button mat-raised-button color="secondary" (click)="navigateTo('/admin/backup')">
+              <mat-icon>backup</mat-icon>
+              Backup de Datos
+            </button>
+            <button mat-raised-button color="basic" (click)="navigateTo('/citas')">
+              <mat-icon>event</mat-icon>
+              Ver Citas
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Actividad reciente -->
+    <div *ngIf="!loading" class="recent-activity">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Actividad Reciente</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="activity-list">
+            <div *ngFor="let activity of recentActivities" class="activity-item">
+              <mat-icon>{{ activity.icono }}</mat-icon>
+              <div class="activity-content">
+                <div class="activity-description">{{ activity.descripcion }}</div>
+                <div class="activity-date">{{ activity.fecha | date:'short' }}</div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -71,7 +71,7 @@ import { Subject, takeUntil } from 'rxjs';
 
             <mat-card-actions>
               <button 
-                mat-button 
+                mat-raised-button 
                 color="primary" 
                 (click)="verDetalles(factura.id)"
               >
@@ -151,6 +151,65 @@ import { Subject, takeUntil } from 'rxjs';
     mat-icon {
       margin-right: 4px;
     }
+
+    /* Asegurar tema médico azul - eliminar colores rosa */
+    .factura-card {
+      background: #ffffff !important;
+      border: 1px solid #e0e0e0 !important;
+      border-radius: 12px !important;
+    }
+
+    mat-card-title {
+      color: #4a4a4a !important;
+      font-family: 'Poppins', sans-serif !important;
+      font-weight: 600 !important;
+    }
+
+    mat-card-subtitle {
+      color: #666666 !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    /* Botones con tema médico */
+    button.mat-raised-button {
+      background: linear-gradient(135deg, #4a90e2 0%, #87ceeb 100%) !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 8px !important;
+      padding: 8px 16px !important;
+      font-weight: 500 !important;
+      font-family: 'Inter', sans-serif !important;
+      transition: all 0.3s ease !important;
+    }
+
+    button.mat-raised-button:hover {
+      background: linear-gradient(135deg, #2196f3 0%, #4a90e2 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3) !important;
+    }
+
+    button.mat-button {
+      color: #4a90e2 !important;
+      font-family: 'Inter', sans-serif !important;
+      font-weight: 500 !important;
+    }
+
+    button.mat-button:hover {
+      background: rgba(74, 144, 226, 0.1) !important;
+    }
+
+    /* Íconos visibles */
+    mat-icon {
+      color: inherit !important;
+      font-size: 20px !important;
+      width: 20px !important;
+      height: 20px !important;
+    }
+
+    .total {
+      color: #4a90e2 !important;
+      font-weight: 600 !important;
+    }
   `]
 })
 export class FacturasComponent implements OnInit, OnDestroy {
@@ -181,6 +240,10 @@ export class FacturasComponent implements OnInit, OnDestroy {
             this.facturas = facturas;
             this.isLoading = false;
             this.cdr.detectChanges();
+            // Forzar estilos blancos después de cargar
+            setTimeout(() => {
+              this.forceWhiteStyles();
+            }, 100);
           });
         },
         error: (error) => {
@@ -207,6 +270,27 @@ export class FacturasComponent implements OnInit, OnDestroy {
 
   goBack() {
     this.ngZone.run(() => this.router.navigate(['/dashboard']));
+  }
+
+  forceWhiteStyles() {
+    // Forzar estilos blancos en todas las tarjetas de factura
+    const cards = document.querySelectorAll('app-facturas mat-card, app-facturas .factura-card');
+    cards.forEach((card: any) => {
+      if (card) {
+        card.style.setProperty('background', '#ffffff', 'important');
+        card.style.setProperty('background-color', '#ffffff', 'important');
+        card.style.setProperty('border', '1px solid #e0e0e0', 'important');
+      }
+    });
+
+    // Forzar estilos en headers y content
+    const headers = document.querySelectorAll('app-facturas mat-card-header, app-facturas mat-card-content');
+    headers.forEach((header: any) => {
+      if (header) {
+        header.style.setProperty('background', '#ffffff', 'important');
+        header.style.setProperty('background-color', '#ffffff', 'important');
+      }
+    });
   }
 
   ngOnDestroy() {

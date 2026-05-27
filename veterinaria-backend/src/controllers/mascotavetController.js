@@ -1,15 +1,13 @@
 const pool = require('../config/database');
+const { createRepository } = require('../utils/repositoryFactory');
+const MascotaHistoryBuilder = require('../utils/mascotaHistoryBuilder');
+
+// Usamos la Factory para crear un repositorio para la tabla `mascota`.
+const mascotaRepo = createRepository(pool, 'mascota');
 
 exports.vertodasMascotas = async (req, res) => {
     try {
-        const connection = await pool.getConnection();
-        const [mascotas] = await connection.query(
-            `SELECT m.id, m.nombre, m.especie, m.raza, m.edad, u.nombre as dueno_mascota, u.tel, u.email
-             FROM mascota m
-             JOIN usuario u ON m.id_usuario = u.id
-             ORDER BY m.nombre`
-        );
-        connection.release();
+        const mascotas = await mascotaRepo.findAll();
         res.json(mascotas);
     } catch (error) {
         console.error('Error al obtener todas las mascotas:', error);
@@ -20,20 +18,12 @@ exports.vertodasMascotas = async (req, res) => {
 exports.obtenerMascota = async (req, res) => {
     try {
         const { id } = req.params;
-        const connection = await pool.getConnection();
-        const [mascotas] = await connection.query(
-            `SELECT m.id, m.nombre, m.especie, m.raza, m.edad, u.nombre as dueno_mascota, u.tel, u.email
-             FROM mascota m
-             JOIN usuario u ON m.id_usuario = u.id
-             WHERE m.id = ?`,
-            [id]
-        );
-        connection.release();
-        
+        const mascotas = await mascotaRepo.findById(id);
+
         if (mascotas.length === 0) {
             return res.status(404).json({ mensaje: 'Mascota no encontrada' });
         }
-        
+
         res.json(mascotas[0]);
     } catch (error) {
         console.error('Error al obtener mascota:', error);
@@ -44,45 +34,22 @@ exports.obtenerMascota = async (req, res) => {
 exports.obtenerHistorialMascota = async (req, res) => {
     try {
         const { id } = req.params;
-        const connection = await pool.getConnection();
-        
-        // Verificar que la mascota existe
-        const [mascota] = await connection.query(
-            'SELECT id FROM mascota WHERE id = ?',
-            [id]
-        );
-        
+
+        // Verificar que la mascota existe (reutilizamos el repo)
+        const mascota = await mascotaRepo.findById(id);
+
         if (mascota.length === 0) {
-            connection.release();
             return res.status(404).json({ mensaje: 'Mascota no encontrada' });
         }
-        
-        // Obtener historial completo: citas, consultas y tratamientos
-        const [historial] = await connection.query(
-            `SELECT 
-                c.id as cita_id,
-                c.fecha,
-                c.hora,
-                c.estado,
-                u.nombre as veterinario,
-                v.especialidad,
-                con.id as consulta_id,
-                con.diagnostico,
-                con.observaciones,
-                t.descripcion as tratamiento,
-                t.medicamento,
-                t.duracion
-             FROM cita c
-             JOIN usuario u ON c.id_veterinario = u.id
-             JOIN veterinario v ON c.id_veterinario = v.id_usuario
-             LEFT JOIN consulta con ON c.id = con.id_cita
-             LEFT JOIN tratamiento t ON con.id_tratamiento = t.id
-             WHERE c.id_mascota = ?
-             ORDER BY c.fecha DESC`,
-            [id]
-        );
-        
+
+        // Usamos el Builder para componer la consulta del historial
+        const builder = new MascotaHistoryBuilder().forMascota(id);
+        const { sql, params } = builder.build();
+
+        const connection = await pool.getConnection();
+        const [historial] = await connection.query(sql, params);
         connection.release();
+
         res.json(historial);
     } catch (error) {
         console.error('Error al obtener historial de mascota:', error);
@@ -93,21 +60,12 @@ exports.obtenerHistorialMascota = async (req, res) => {
 exports.buscarMascotas = async (req, res) => {
     try {
         const { q } = req.query;
-        
+
         if (!q) {
             return res.status(400).json({ mensaje: 'Parámetro de búsqueda requerido' });
         }
-        
-        const connection = await pool.getConnection();
-        const [mascotas] = await connection.query(
-            `SELECT m.id, m.nombre, m.especie, m.raza, m.edad, u.nombre as dueno_mascota, u.tel, u.email
-             FROM mascota m
-             JOIN usuario u ON m.id_usuario = u.id
-             WHERE m.nombre LIKE ? OR u.nombre LIKE ?
-             ORDER BY m.nombre`,
-            [`%${q}%`, `%${q}%`]
-        );
-        connection.release();
+
+        const mascotas = await mascotaRepo.searchByNameOrOwner(q);
         res.json(mascotas);
     } catch (error) {
         console.error('Error al buscar mascotas:', error);
